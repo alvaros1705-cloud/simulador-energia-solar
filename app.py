@@ -81,12 +81,12 @@ if dark_mode:
     glow_green = "rgba(16,185,129,.15)"
     glow_violet = "rgba(139,92,246,.20)"
 else:
-    bg = "#F5F7FF"
-    panel = "#FFFFFF"
-    text = "#17243B"
-    muted = "#52627A"
-    accent = "#315FEA"
-    grid = "#DCE4F2"
+    bg = "#EDF3FF"
+    panel = "#F9FBFF"
+    text = "#172B49"
+    muted = "#465D7A"
+    accent = "#2457D6"
+    grid = "#C8D7EE"
     logo_multimedia = ASSETS_DIR / "logo_ingenieria_multimedia_claro.png"
     theme_name = "claro"
     glow_blue = "rgba(37,99,235,.11)"
@@ -97,108 +97,201 @@ st.markdown(
     f"""
     <style>
     :root {{
-      --azul: #315FEA; --verde: #0F9F79; --violeta: #8052D6;
+      --azul: #2563EB;
+      --verde: #10B981;
+      --violeta: #8B5CF6;
+      --azul-claro: #38BDF8;
     }}
     .stApp {{
       background:
-        radial-gradient(ellipse at 8% 2%, rgba(49,95,234,.13), transparent 35%),
-        radial-gradient(ellipse at 92% 8%, rgba(128,82,214,.12), transparent 34%),
-        radial-gradient(ellipse at 55% 92%, rgba(15,159,121,.10), transparent 38%),
-        linear-gradient(135deg, {bg} 0%, #F0F6FF 48%, #F7F2FF 100%);
+        radial-gradient(ellipse at 8% 2%, {glow_blue}, transparent 32%),
+        radial-gradient(ellipse at 92% 9%, {glow_violet}, transparent 30%),
+        radial-gradient(ellipse at 60% 95%, {glow_green}, transparent 34%),
+        {bg};
       color: {text};
     }}
     [data-testid="stHeader"] {{ background: transparent; }}
     [data-testid="stSidebar"] {{
-      background: linear-gradient(155deg, {panel}, #EEF4FF 58%, #F5F0FF);
+      background: linear-gradient(165deg, {panel}, {bg});
       border-right: 1px solid {grid};
     }}
     [data-testid="stMarkdownContainer"], [data-testid="stMetricLabel"],
-    [data-testid="stMetricValue"], p, label, h1, h2, h3, h4 {{ color: {text}; }}
+    [data-testid="stMetricValue"], p, label, h1, h2, h3, h4 {{
+      color: {text};
+    }}
     [data-testid="stCaptionContainer"], .stCaption {{ color: {muted} !important; }}
     [data-testid="stAlert"] {{ border-radius: 15px; border: 1px solid {grid}; }}
     div[data-testid="stMetric"] {{
-      background: linear-gradient(145deg, {panel}, rgba(235,243,255,.92), rgba(246,240,255,.88));
-      border: 1px solid {grid}; border-top: 3px solid transparent;
-      border-image: linear-gradient(90deg, #315FEA, #0F9F79, #8052D6) 1;
+      background: linear-gradient(145deg, {panel}, {bg});
+      border: 1px solid {grid};
+      border-top: 3px solid transparent;
+      border-image: linear-gradient(90deg, #2563EB, #10B981, #8B5CF6) 1;
       padding: 14px 15px; border-radius: 15px;
-      box-shadow: 0 8px 24px rgba(35,55,95,.07);
+      box-shadow: 0 8px 24px rgba(15,35,65,.07);
     }}
     div[data-testid="stDataFrame"], div[data-testid="stTable"] {{
       border: 1px solid {grid}; border-radius: 13px; overflow: hidden;
     }}
     .brand-divider {{
       border: 0; height: 3px; border-radius: 8px;
-      background: linear-gradient(90deg, #315FEA, #0F9F79, #8052D6);
+      background: linear-gradient(90deg, #2563EB, #10B981, #8B5CF6);
       margin: .65rem 0 1.35rem 0;
     }}
-    .university-subtitle {{
-      color: {text}; font-size: clamp(1.05rem, 2vw, 1.45rem);
-      font-weight: 800; letter-spacing: .025em; margin: 0;
-      background: linear-gradient(90deg, #315FEA, #0F9F79, #8052D6);
+    .university-title {{
+      font-size: clamp(1.0rem, 2.2vw, 1.55rem);
+      font-weight: 850; letter-spacing: .045em; margin: 0;
+      background: linear-gradient(90deg, #2563EB, #0F9F79, #8052D6);
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }}
+    .university-subtitle {{ color: {muted}; font-size: .92rem; margin-top: .15rem; }}
     .hero-panel {{
-      padding: clamp(1.1rem, 3vw, 2rem); border-radius: 22px;
+      padding: clamp(1.1rem, 3vw, 2rem);
+      border-radius: 22px;
       border: 1px solid {grid};
-      background: linear-gradient(115deg, rgba(49,95,234,.12), rgba(15,159,121,.09), rgba(128,82,214,.12));
-      box-shadow: 0 14px 38px rgba(35,55,95,.08); margin: .4rem 0 1rem 0;
+      background: linear-gradient(115deg, rgba(37,99,235,.13), rgba(16,185,129,.10), rgba(139,92,246,.13));
+      box-shadow: 0 14px 38px rgba(20,40,80,.09);
+      margin: .4rem 0 1rem 0;
     }}
     .hero-kicker {{
       text-transform: uppercase; letter-spacing: .16em; font-size: .72rem;
       font-weight: 800; color: {accent}; margin-bottom: .45rem;
     }}
     .project-title {{
-      font-size: clamp(1.45rem, 3.3vw, 2.35rem); line-height: 1.15;
-      font-weight: 900; margin-bottom: .45rem; color: {text};
+      font-size: clamp(1.45rem, 3.3vw, 2.35rem);
+      line-height: 1.15; font-weight: 900; margin-bottom: .45rem;
+      color: {text};
     }}
     .hero-subtitle {{ color: {muted}; font-size: clamp(.88rem, 1.5vw, 1.02rem); }}
     .footer-card {{
-      background: linear-gradient(125deg, {panel}, rgba(49,95,234,.07), rgba(15,159,121,.055), rgba(128,82,214,.08));
+      background: linear-gradient(125deg, {panel}, rgba(37,99,235,.07), rgba(139,92,246,.08));
       border: 1px solid {grid}; border-radius: 18px;
       border-top: 3px solid transparent;
-      border-image: linear-gradient(90deg, #315FEA, #0F9F79, #8052D6) 1;
+      border-image: linear-gradient(90deg, #2563EB, #10B981, #8B5CF6) 1;
       padding: 1.1rem 1.3rem; margin-top: 1rem;
-      box-shadow: 0 10px 28px rgba(35,55,95,.07);
+      box-shadow: 0 10px 28px rgba(15,35,65,.07);
     }}
     .footer-heading {{ color: {accent}; font-weight: 850; margin-bottom: .45rem; }}
     .student-list {{ line-height: 1.8; margin: 0; }}
-    .stButton > button, .stDownloadButton > button,
-    [data-testid="stBaseButton-primary"], [data-testid="stBaseButton-secondary"] {{
-      color: #FFFFFF !important;
-      background: linear-gradient(100deg, #315FEA, #0F9F79, #8052D6) !important;
-      border: 1px solid rgba(49,95,234,.18) !important; border-radius: 11px !important;
-      font-weight: 750 !important; box-shadow: 0 5px 16px rgba(49,95,234,.20);
+    .stButton > button, .stDownloadButton > button {{
+      border: 0; border-radius: 11px; color: white;
+      background: linear-gradient(100deg, #2563EB, #0F9F79, #8052D6);
+      font-weight: 750; box-shadow: 0 5px 16px rgba(37,99,235,.20);
       transition: transform .15s ease, filter .15s ease;
     }}
-    .stButton > button p, .stDownloadButton > button p,
-    [data-testid="stBaseButton-primary"] p, [data-testid="stBaseButton-secondary"] p {{
-      color: #FFFFFF !important;
+    .stButton > button:hover, .stDownloadButton > button:hover {{
+      color: white; filter: brightness(1.08); transform: translateY(-1px);
     }}
-    .stButton > button:hover, .stDownloadButton > button:hover,
-    [data-testid="stBaseButton-primary"]:hover, [data-testid="stBaseButton-secondary"]:hover {{
-      color: #FFFFFF !important; filter: brightness(1.08); transform: translateY(-1px);
-    }}
-    [data-testid="stSlider"] [role="slider"] {{ border-color: #315FEA; }}
-    [data-testid="stToggle"] label, [data-testid="stCheckbox"] label,
-    [data-testid="stRadio"] label {{ color: {text} !important; }}
+    [data-testid="stSlider"] [role="slider"] {{ border-color: #2563EB; }}
     @media (max-width: 700px) {{
-      .university-subtitle {{ font-size: 1rem; }}
-      .footer-card {{ padding: .85rem; }} .hero-panel {{ border-radius: 15px; }}
+      .university-title {{ font-size: 1rem; }}
+      .university-subtitle {{ font-size: .78rem; }}
+      .footer-card {{ padding: .85rem; }}
+      .hero-panel {{ border-radius: 15px; }}
     }}
     </style>
     """,
     unsafe_allow_html=True
 )
 
+# Ajustes exclusivos del tema claro. El tema oscuro conserva intactos sus estilos originales.
+if not dark_mode:
+    st.markdown(
+        """
+        <style>
+        .stApp {
+          background:
+            radial-gradient(ellipse at 8% 3%, rgba(37,99,235,.16), transparent 34%),
+            radial-gradient(ellipse at 92% 8%, rgba(139,92,246,.14), transparent 32%),
+            radial-gradient(ellipse at 55% 95%, rgba(16,185,129,.12), transparent 38%),
+            linear-gradient(135deg, #EDF3FF 0%, #F4F8FF 48%, #F6F1FF 100%) !important;
+        }
+        [data-testid="stSidebar"] {
+          background: linear-gradient(155deg, #F8FBFF 0%, #EDF4FF 55%, #F4F0FF 100%) !important;
+          border-right: 1px solid #C8D7EE !important;
+        }
+        /* Legibilidad de títulos, textos, etiquetas y controles del modo claro */
+        [data-testid="stMarkdownContainer"], [data-testid="stMarkdownContainer"] *,
+        [data-testid="stWidgetLabel"], [data-testid="stWidgetLabel"] *,
+        [data-testid="stSlider"] *, [data-testid="stNumberInput"] *,
+        [data-testid="stSelectbox"] *, [data-testid="stRadio"] *,
+        [data-testid="stCheckbox"] *, [data-testid="stToggle"] *,
+        [data-testid="stCaptionContainer"], .stCaption {
+          color: #172B49 !important;
+        }
+        [data-testid="stMarkdownContainer"] .hero-kicker { color: #1766B7 !important; }
+        [data-testid="stMarkdownContainer"] .project-title { color: #172B49 !important; }
+        [data-testid="stMarkdownContainer"] .hero-subtitle { color: #465D7A !important; }
+        [data-testid="stMarkdownContainer"] .university-title {
+          background: linear-gradient(90deg, #2457D6, #087F68, #7042C7) !important;
+          -webkit-background-clip: text !important;
+          background-clip: text !important;
+          color: transparent !important;
+        }
+        .hero-panel {
+          background: linear-gradient(115deg, rgba(37,99,235,.13), rgba(16,185,129,.10), rgba(139,92,246,.13)) !important;
+          border-color: #AFC4E5 !important;
+        }
+        .footer-card {
+          background: linear-gradient(125deg, #F9FBFF, rgba(37,99,235,.09), rgba(16,185,129,.07), rgba(139,92,246,.10)) !important;
+          border-color: #C8D7EE !important;
+        }
+        /* Botones: fondo degradado y texto blanco forzado para evitar que desaparezcan */
+        .stButton > button, .stDownloadButton > button,
+        [data-testid="stBaseButton-primary"], [data-testid="stBaseButton-secondary"] {
+          color: #FFFFFF !important;
+          background: linear-gradient(100deg, #2457D6 0%, #087F68 52%, #7042C7 100%) !important;
+          border: 1px solid rgba(36,87,214,.22) !important;
+          border-radius: 11px !important;
+          font-weight: 750 !important;
+          box-shadow: 0 5px 16px rgba(36,87,214,.20) !important;
+        }
+        .stButton > button *, .stDownloadButton > button *,
+        [data-testid="stBaseButton-primary"] *,
+        [data-testid="stBaseButton-secondary"] * {
+          color: #FFFFFF !important;
+          fill: #FFFFFF !important;
+        }
+        .stButton > button:hover, .stDownloadButton > button:hover,
+        [data-testid="stBaseButton-primary"]:hover,
+        [data-testid="stBaseButton-secondary"]:hover {
+          color: #FFFFFF !important;
+          filter: brightness(1.08);
+          transform: translateY(-1px);
+        }
+        [data-testid="stNumberInput"] input, [data-testid="stTextInput"] input {
+          color: #172B49 !important;
+          background: #FFFFFF !important;
+          border-color: #B9CBE5 !important;
+        }
+        [data-testid="stSlider"] [role="slider"] {
+          background: #2457D6 !important;
+          border-color: #2457D6 !important;
+        }
+        [data-testid="stAlert"] {
+          color: #172B49 !important;
+          background: rgba(255,255,255,.84) !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 # ------------------------------------------------------------
 # Encabezado institucional
-left, right = st.columns([2.0, 3.0], vertical_alignment="center")
+# ------------------------------------------------------------
+left, right = st.columns([1.15, 3.85], vertical_alignment="center")
 with left:
     if (ASSETS_DIR / "logo_universidad_simon_bolivar.png").exists():
         st.image(str(ASSETS_DIR / "logo_universidad_simon_bolivar.png"), use_container_width=True)
 with right:
     st.markdown(
-        '<p class="university-subtitle">Proyecto académico de aula</p>',
+        """
+        <div>
+          <p class="university-title">UNIVERSIDAD SIMÓN BOLÍVAR</p>
+          <p class="university-subtitle">Barranquilla y Cúcuta · Colombia</p>
+          <p class="university-subtitle">Proyecto académico de aula</p>
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
@@ -472,6 +565,6 @@ with footer_left:
     )
 with footer_right:
     if logo_multimedia.exists():
-        st.image(str(logo_multimedia), width=140)
+        st.image(str(logo_multimedia), use_container_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 st.caption("Universidad Simón Bolívar · Proyecto académico de aula · Los resultados dependen de los supuestos y parámetros seleccionados.")
