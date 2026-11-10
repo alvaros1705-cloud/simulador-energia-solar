@@ -307,9 +307,9 @@ if not dark_mode:
           fill: #2457D6 !important;
         }
 
-        /* Indicadores de variación: blanco solo en el texto.
-           El SVG de flecha conserva el color y la forma nativos de Streamlit. */
-        div[data-testid="stMetricDelta"] > div {
+        /* Indicadores de variación: forzar blanco en todos los nodos de texto,
+           sin recolorear el SVG de la flecha ni sus trazos. */
+        div[data-testid="stMetricDelta"] :not(svg):not(svg *) {
           color: #FFFFFF !important;
         }
 
