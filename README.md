@@ -1,6 +1,14 @@
 # Simulador de aprovechamiento de energía solar
 
-Aplicación web académica desarrollada en Python con Streamlit.
+Aplicación web académica desarrollada en Python con Streamlit para el proyecto de Cálculo Integral del programa de Ingeniería Multimedia de la Universidad Simón Bolívar.
+
+## Identidad institucional
+- Encabezado con el logo de la Universidad Simón Bolívar.
+- Pie de página con los cuatro integrantes del equipo, programa académico y asignatura.
+- Logo de Ingeniería Multimedia con variantes para tema claro y oscuro.
+- Selector de tema claro/oscuro.
+- Identidad visual con paleta azul, verde y violeta, gradientes suaves, tarjetas y botones personalizados.
+- Diseño adaptable de Streamlit para pantallas de computador, tableta y celular.
 
 ## Funcionalidades
 - Modelo cuadrático de potencia entre las 6:00 y las 18:00.
@@ -13,38 +21,27 @@ Aplicación web académica desarrollada en Python con Streamlit.
 - Carga opcional de mediciones reales en CSV, separadas del modelo hipotético.
 - Descarga de resumen de resultados en CSV.
 
-## Ejecución local
+## Archivos del repositorio
+- `app.py`: aplicación principal.
+- `requirements.txt`: dependencias.
+- `plantilla_mediciones_reales.csv`: plantilla para mediciones reales.
+- `assets/`: logos institucionales y del programa.
 
-1. Instalar Python 3.10 o superior.
-2. Abrir una terminal en esta carpeta.
-3. Instalar dependencias:
+## Publicación en Streamlit Community Cloud
+1. Subir todos los archivos y la carpeta `assets` al repositorio de GitHub, conservando la estructura.
+2. En Streamlit Community Cloud, seleccionar el repositorio.
+3. Elegir la rama `main`.
+4. Indicar `app.py` como archivo principal.
+5. Desplegar la aplicación.
 
-   `pip install -r requirements.txt`
-
-4. Ejecutar:
-
-   `streamlit run app.py`
-
-5. Abrir en el navegador la dirección local que indique Streamlit (normalmente http://localhost:8501).
-
-## Formato para mediciones reales (opcional)
-
-El CSV debe contener al menos estas dos columnas:
-
-- `hora`: hora decimal (por ejemplo, 8.5 para las 8:30).
-- `potencia_w`: potencia medida en vatios.
-
-No introducir valores inventados. Esta sección es independiente de la simulación teórica.
-
-## Modelo matemático utilizado
-
+## Modelo matemático
 `P(t) = Pmax * (1 - (t - 12)^2 / 36)`, para `6 <= t <= 18`.
 
 Con `Pmax = 300 W`, la función alcanza 300 W a las 12:00 y es cero a las 6:00 y a las 18:00. La energía para un intervalo `[a,b]` se calcula integrando la función. Para un panel entre las 6:00 y las 18:00, el resultado analítico es 2400 Wh = 2.4 kWh.
 
 ## Advertencias académicas
-
 - Los parámetros iniciales son hipotéticos y no representan mediciones de una instalación real.
 - Los factores 0.8, 1.0 y 1.2 son escenarios de variación de potencia máxima, no eficiencias medidas.
 - El cálculo de superficie es un ejercicio geométrico rectangular y no equivale al área bajo la curva de potencia.
 - El sólido de revolución es ilustrativo; no es un diseño estructural validado.
+- La interfaz aprovecha el diseño adaptable de Streamlit; debe comprobarse en navegadores y tamaños de pantalla reales antes de su entrega definitiva.
