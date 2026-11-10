@@ -162,6 +162,18 @@ st.markdown(
       color: {text};
     }}
     .hero-subtitle {{ color: {muted}; font-size: clamp(.88rem, 1.5vw, 1.02rem); }}
+    /* Título de cabecera compartido por ambos temas; solo afecta esta etiqueta. */
+    .project-label {{
+      font-size: clamp(1.65rem, 2.8vw, 2.45rem);
+      line-height: 1.16;
+      font-weight: 900;
+      letter-spacing: .015em;
+      margin: 0;
+      background: linear-gradient(95deg, #60A5FA, #34D399, #A78BFA);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }}
     .footer-card {{
       background: linear-gradient(125deg, {panel}, rgba(37,99,235,.07), rgba(139,92,246,.08));
       border: 1px solid {grid}; border-radius: 18px;
@@ -352,36 +364,20 @@ if not dark_mode:
     )
 
 # ------------------------------------------------------------
-# Encabezado institucional
+# Encabezado institucional compartido por ambos temas
 # ------------------------------------------------------------
-if dark_mode:
-    # Se conserva exactamente la cabecera de la versión oscura original.
-    left, right = st.columns([1.15, 3.85], vertical_alignment="center")
-    with left:
-        if (ASSETS_DIR / "logo_universidad_simon_bolivar.png").exists():
-            st.image(str(ASSETS_DIR / "logo_universidad_simon_bolivar.png"), use_container_width=True)
-    with right:
-        st.markdown(
-            """
-            <div>
-              <p class="university-title">UNIVERSIDAD SIMÓN BOLÍVAR</p>
-              <p class="university-subtitle">Barranquilla y Cúcuta · Colombia</p>
-              <p class="university-subtitle">Proyecto académico de aula</p>
-            </div>
-            """,
-            unsafe_allow_html=True
+left, right = st.columns([2.3, 2.7], vertical_alignment="center")
+with left:
+    if (ASSETS_DIR / "logo_universidad_simon_bolivar.png").exists():
+        st.image(
+            str(ASSETS_DIR / "logo_universidad_simon_bolivar.png"),
+            use_container_width=True
         )
-else:
-    # En modo claro se agranda el logo y se deja un único rótulo institucional.
-    left, right = st.columns([2.3, 2.7], vertical_alignment="center")
-    with left:
-        if (ASSETS_DIR / "logo_universidad_simon_bolivar.png").exists():
-            st.image(str(ASSETS_DIR / "logo_universidad_simon_bolivar.png"), use_container_width=True)
-    with right:
-        st.markdown(
-            '<p class="project-label">Proyecto académico de aula</p>',
-            unsafe_allow_html=True
-        )
+with right:
+    st.markdown(
+        '<p class="project-label">Proyecto académico de aula</p>',
+        unsafe_allow_html=True
+    )
 
 st.markdown('<hr class="brand-divider">', unsafe_allow_html=True)
 
