@@ -307,6 +307,16 @@ if not dark_mode:
           fill: #2457D6 !important;
         }
 
+        /* Indicadores de variación en métricas: mantener texto claro sobre cápsula verde. */
+        [data-testid="stMetricDelta"],
+        [data-testid="stMetricDelta"] *,
+        [data-testid="stMetricDelta"] svg,
+        [data-testid="stMetricDelta"] svg path {
+          color: #FFFFFF !important;
+          fill: #FFFFFF !important;
+          stroke: #FFFFFF !important;
+        }
+
         /* Selector de tema: pista y control visibles sobre el fondo claro */
         [data-testid="stToggle"] label,
         [data-testid="stToggle"] label p {
