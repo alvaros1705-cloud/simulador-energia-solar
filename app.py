@@ -271,6 +271,81 @@ if not dark_mode:
           color: #172B49 !important;
           background: rgba(255,255,255,.84) !important;
         }
+
+        /* Selector de tema: pista y control visibles sobre el fondo claro */
+        [data-testid="stToggle"] label,
+        [data-testid="stToggle"] label p {
+          color: #172B49 !important;
+        }
+        [data-testid="stToggle"] button[role="switch"] {
+          background: #B8C7DC !important;
+          border: 1px solid #647D9F !important;
+          box-shadow: inset 0 1px 2px rgba(20,40,70,.12) !important;
+        }
+        [data-testid="stToggle"] button[role="switch"]::after {
+          background: #FFFFFF !important;
+          border: 1px solid #647D9F !important;
+          box-shadow: 0 1px 4px rgba(20,40,70,.28) !important;
+        }
+        [data-testid="stToggle"] button[role="switch"][aria-checked="true"] {
+          background: #2457D6 !important;
+        }
+
+        /* Iconos nativos de la barra superior (Share, estrella, editar y GitHub) */
+        [data-testid="stHeader"] button,
+        [data-testid="stToolbar"] button,
+        [data-testid="stHeader"] [role="button"],
+        [data-testid="stToolbar"] [role="button"] {
+          color: #203653 !important;
+        }
+        [data-testid="stHeader"] svg,
+        [data-testid="stToolbar"] svg {
+          color: #203653 !important;
+        }
+        [data-testid="stHeader"] svg path,
+        [data-testid="stToolbar"] svg path {
+          stroke: #203653 !important;
+        }
+        [data-testid="stHeader"] svg path[fill="currentColor"],
+        [data-testid="stToolbar"] svg path[fill="currentColor"] {
+          fill: #203653 !important;
+        }
+
+        /* Botones +/- del selector de cantidad de paneles */
+        [data-testid="stNumberInput"] button {
+          color: #203653 !important;
+          background: #E3ECF8 !important;
+          border: 1px solid #B8C9E1 !important;
+        }
+        [data-testid="stNumberInput"] button:hover {
+          color: #FFFFFF !important;
+          background: #315FEA !important;
+          border-color: #315FEA !important;
+        }
+        [data-testid="stNumberInput"] button svg {
+          color: #203653 !important;
+          stroke: #203653 !important;
+        }
+        [data-testid="stNumberInput"] button:hover svg {
+          color: #FFFFFF !important;
+          stroke: #FFFFFF !important;
+        }
+        .project-label {
+          font-size: clamp(1.65rem, 2.8vw, 2.45rem) !important;
+          line-height: 1.16 !important;
+          font-weight: 900 !important;
+          letter-spacing: .015em !important;
+          margin: 0 !important;
+          background: linear-gradient(95deg, #2457D6, #087F68, #7042C7) !important;
+          -webkit-background-clip: text !important;
+          background-clip: text !important;
+          color: transparent !important;
+        }
+        @media (max-width: 700px) {
+          .project-label {
+            font-size: 1.55rem !important;
+          }
+        }
         </style>
         """,
         unsafe_allow_html=True
@@ -279,21 +354,34 @@ if not dark_mode:
 # ------------------------------------------------------------
 # Encabezado institucional
 # ------------------------------------------------------------
-left, right = st.columns([1.15, 3.85], vertical_alignment="center")
-with left:
-    if (ASSETS_DIR / "logo_universidad_simon_bolivar.png").exists():
-        st.image(str(ASSETS_DIR / "logo_universidad_simon_bolivar.png"), use_container_width=True)
-with right:
-    st.markdown(
-        """
-        <div>
-          <p class="university-title">UNIVERSIDAD SIMÓN BOLÍVAR</p>
-          <p class="university-subtitle">Barranquilla y Cúcuta · Colombia</p>
-          <p class="university-subtitle">Proyecto académico de aula</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+if dark_mode:
+    # Se conserva exactamente la cabecera de la versión oscura original.
+    left, right = st.columns([1.15, 3.85], vertical_alignment="center")
+    with left:
+        if (ASSETS_DIR / "logo_universidad_simon_bolivar.png").exists():
+            st.image(str(ASSETS_DIR / "logo_universidad_simon_bolivar.png"), use_container_width=True)
+    with right:
+        st.markdown(
+            """
+            <div>
+              <p class="university-title">UNIVERSIDAD SIMÓN BOLÍVAR</p>
+              <p class="university-subtitle">Barranquilla y Cúcuta · Colombia</p>
+              <p class="university-subtitle">Proyecto académico de aula</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+else:
+    # En modo claro se agranda el logo y se deja un único rótulo institucional.
+    left, right = st.columns([2.3, 2.7], vertical_alignment="center")
+    with left:
+        if (ASSETS_DIR / "logo_universidad_simon_bolivar.png").exists():
+            st.image(str(ASSETS_DIR / "logo_universidad_simon_bolivar.png"), use_container_width=True)
+    with right:
+        st.markdown(
+            '<p class="project-label">Proyecto académico de aula</p>',
+            unsafe_allow_html=True
+        )
 
 st.markdown('<hr class="brand-divider">', unsafe_allow_html=True)
 
