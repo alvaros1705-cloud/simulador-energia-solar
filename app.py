@@ -307,14 +307,10 @@ if not dark_mode:
           fill: #2457D6 !important;
         }
 
-        /* Indicadores de variación en métricas: mantener texto claro sobre cápsula verde. */
-        [data-testid="stMetricDelta"],
-        [data-testid="stMetricDelta"] *,
-        [data-testid="stMetricDelta"] svg,
-        [data-testid="stMetricDelta"] svg path {
+        /* Indicadores de variación: blanco solo en el texto.
+           El SVG de flecha conserva el color y la forma nativos de Streamlit. */
+        div[data-testid="stMetricDelta"] > div {
           color: #FFFFFF !important;
-          fill: #FFFFFF !important;
-          stroke: #FFFFFF !important;
         }
 
         /* Selector de tema: pista y control visibles sobre el fondo claro */
