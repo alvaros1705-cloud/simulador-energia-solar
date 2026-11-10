@@ -375,7 +375,21 @@ with left:
         )
 with right:
     st.markdown(
-        '<p class="project-label">Proyecto académico de aula</p>',
+        '''
+        <div style="
+            font-size: clamp(1.65rem, 2.8vw, 2.45rem);
+            line-height: 1.16;
+            font-weight: 900;
+            letter-spacing: .015em;
+            margin: 0;
+            background: linear-gradient(95deg, #2457D6, #087F68, #7042C7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        ">
+            Proyecto académico de aula
+        </div>
+        ''',
         unsafe_allow_html=True
     )
 
