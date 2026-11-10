@@ -279,9 +279,32 @@ if not dark_mode:
           background: #2457D6 !important;
           border-color: #2457D6 !important;
         }
-        [data-testid="stAlert"] {
+        /* Avisos del tema claro: fondo pálido y texto oscuro con contraste real. */
+        div[data-testid="stAlert"] {
+          background: linear-gradient(105deg, #EAF2FF 0%, #E8F7F2 52%, #F1ECFF 100%) !important;
+          background-color: #EAF2FF !important;
           color: #172B49 !important;
-          background: rgba(255,255,255,.84) !important;
+          border: 1px solid #B9CCE8 !important;
+          border-radius: 14px !important;
+          box-shadow: 0 5px 18px rgba(36, 71, 122, .07) !important;
+        }
+        div[data-testid="stAlert"] > div,
+        div[data-testid="stAlert"] > div > div,
+        div[data-testid="stAlert"] [data-testid="stAlertContent"] {
+          background: transparent !important;
+          background-color: transparent !important;
+          color: #172B49 !important;
+        }
+        div[data-testid="stAlert"] p,
+        div[data-testid="stAlert"] span,
+        div[data-testid="stAlert"] [data-testid="stMarkdownContainer"],
+        div[data-testid="stAlert"] [data-testid="stMarkdownContainer"] *,
+        div[data-testid="stAlert"] [data-testid="stAlertContent"] * {
+          color: #172B49 !important;
+        }
+        div[data-testid="stAlert"] svg {
+          color: #2457D6 !important;
+          fill: #2457D6 !important;
         }
 
         /* Selector de tema: pista y control visibles sobre el fondo claro */
