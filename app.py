@@ -623,6 +623,81 @@ with st.sidebar:
             on_click=set_page,
             args=(idx,),
         )
+
+    # Ilustración decorativa del panel solar: SVG transparente, adaptable a ambos temas.
+    st.markdown(
+        """
+        <div class="sidebar-solar-art" role="img" aria-label="Panel solar bajo el sol">
+          <svg viewBox="0 0 260 178" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="solarSun" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fff7a8"/>
+                <stop offset=".55" stop-color="#ffc928"/>
+                <stop offset="1" stop-color="#ff9f1c"/>
+              </linearGradient>
+              <linearGradient id="solarGlass" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#31c5ff"/>
+                <stop offset=".45" stop-color="#0878d8"/>
+                <stop offset="1" stop-color="#123b91"/>
+              </linearGradient>
+              <linearGradient id="solarFrame" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f8fcff"/>
+                <stop offset="1" stop-color="#8ea9c3"/>
+              </linearGradient>
+              <linearGradient id="solarLeaf" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#b7f36b"/>
+                <stop offset="1" stop-color="#35a852"/>
+              </linearGradient>
+              <filter id="solarGlow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="5"/>
+              </filter>
+            </defs>
+            <g opacity=".22" filter="url(#solarGlow)">
+              <circle cx="130" cy="49" r="31" fill="#ffbd28"/>
+            </g>
+            <g stroke="#f6b72b" stroke-width="4" stroke-linecap="round">
+              <path d="M130 5v12M91 17l8 10M169 17l-8 10M72 49h13M175 49h13"/>
+            </g>
+            <circle cx="130" cy="50" r="29" fill="url(#solarSun)" stroke="#fff0a0" stroke-width="2"/>
+            <path d="M89 122l-4 37m89-37 7 37m-92 0h94" fill="none" stroke="url(#solarFrame)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M79 157h102" stroke="#6f879e" stroke-width="5" stroke-linecap="round"/>
+            <g transform="translate(25 49) skewX(-13)">
+              <rect x="0" y="0" width="184" height="91" rx="7" fill="url(#solarFrame)" stroke="#d8e7f5" stroke-width="2"/>
+              <rect x="7" y="7" width="170" height="77" rx="4" fill="url(#solarGlass)" stroke="#eaf7ff" stroke-width="1.5"/>
+              <g stroke="#b7eaff" stroke-width="1.4" opacity=".9">
+                <path d="M7 32h170M7 58h170M49 7v77M92 7v77M135 7v77"/>
+              </g>
+              <g fill="#ffffff" opacity=".22">
+                <path d="M12 11h31L24 28H8zM55 11h30L67 28H42zM98 11h30l-18 17H85z"/>
+              </g>
+            </g>
+            <g fill="url(#solarLeaf)" stroke="#e0ffad" stroke-width="1.4">
+              <path d="M194 139c-1-27 13-43 36-47-1 22-11 39-36 47z"/>
+              <path d="M194 140c-17-19-16-35-4-49 13 15 16 31 4 49z"/>
+            </g>
+            <path d="M194 141l24-39m-24 39-4-40" stroke="#e9ffc8" stroke-width="1.5" fill="none" opacity=".85"/>
+            <path d="M31 169c48-7 133-7 193 0" stroke="#28b9ed" stroke-width="2.5" stroke-linecap="round" opacity=".9" fill="none"/>
+          </svg>
+        </div>
+        <style>
+          .sidebar-solar-art {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 13px 0 17px;
+            margin: 0 auto 2px;
+          }
+          .sidebar-solar-art svg {
+            display: block;
+            width: min(190px, 76%);
+            height: auto;
+            overflow: visible;
+          }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
     st.divider()
     st.markdown("### ☀️ " + T["model"])
     st.caption(T["institution"])
