@@ -415,6 +415,14 @@ st.markdown(f"""<style>
 .stButton button, .stDownloadButton button {{ min-height:2.7rem; border-radius:12px !important; font-weight:750 !important; transition:transform .2s ease, box-shadow .2s ease !important; }}
 .stButton button:hover, .stDownloadButton button:hover {{ transform:translateY(-2px); box-shadow:0 7px 16px rgba(18,48,78,.12) !important; }}
 .sl-footer {{ color:var(--sl-muted) !important; text-align:center; padding:1.2rem 0 .5rem 0; font-size:.78rem; }}
+.sl-empty-state {{
+  display:flex; align-items:center; gap:.75rem; width:100%; box-sizing:border-box;
+  background:var(--sl-surface2) !important; color:var(--sl-text) !important;
+  border:1px solid var(--sl-line) !important; border-radius:12px; padding:1rem 1.15rem;
+  font-size:.96rem; font-weight:550; line-height:1.5; opacity:1 !important;
+}}
+.sl-empty-state span {{ color:var(--sl-text) !important; -webkit-text-fill-color:var(--sl-text) !important; opacity:1 !important; }}
+.sl-empty-state .sl-empty-icon {{ color:var(--sl-blue) !important; -webkit-text-fill-color:var(--sl-blue) !important; font-size:1.15rem; flex:0 0 auto; }}
 @keyframes sl-enter {{ from {{ opacity:0; transform:translateY(10px); }} to {{ opacity:1; transform:translateY(0); }} }}
 @keyframes sl-rise {{ from {{ opacity:0; transform:translateY(12px); }} to {{ opacity:1; transform:translateY(0); }} }}
 @keyframes sl-sun {{ from {{ transform:translateY(2px) scale(.92); opacity:.45; }} to {{ transform:translateY(-10px) scale(1.12); opacity:.9; }} }}
@@ -902,7 +910,10 @@ elif page == T["nav"][1]:
         else:
             st.info("Se requieren al menos tres horas distintas para calcular un ajuste cuadrático." if lang == "es" else "At least three distinct times are required for a quadratic fit.")
     else:
-        st.info(T["no_measurements"])
+        st.markdown(
+            f'<div class="sl-empty-state"><span class="sl-empty-icon">ⓘ</span><span>{T["no_measurements"]}</span></div>',
+            unsafe_allow_html=True,
+        )
 
 # ------------------------------ INTEGRAL CALCULUS ------------------------------
 elif page == T["nav"][2]:
@@ -988,7 +999,10 @@ elif page == T["nav"][4]:
             st.session_state.history = []
             st.rerun()
     else:
-        st.info(T["empty_history"])
+        st.markdown(
+            f'<div class="sl-empty-state"><span class="sl-empty-icon">◷</span><span>{T["empty_history"]}</span></div>',
+            unsafe_allow_html=True,
+        )
 
 # ------------------------------ REPORTS ------------------------------
 elif page == T["nav"][5]:
