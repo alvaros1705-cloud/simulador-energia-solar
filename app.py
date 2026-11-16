@@ -27,7 +27,7 @@ EN = {
 if "lang" not in st.session_state: st.session_state.lang = "Español (Colombia)"
 if "dark" not in st.session_state: st.session_state.dark = False
 if "history" not in st.session_state: st.session_state.history = []
-lang_label = st.selectbox("Idioma / Language", ["Español (Colombia)", "English (USA)"], horizontal=True)
+lang_label = st.radio("Idioma / Language", ["Español (Colombia)", "English (USA)"], horizontal=True, label_visibility="collapsed")
 st.session_state.lang = lang_label
 L = EN if lang_label == "English (USA)" else ES
 st.session_state.dark = st.toggle("🌙 Modo oscuro / Dark mode", value=st.session_state.dark)
