@@ -429,6 +429,29 @@ st.markdown(f"""<style>
 }}
 .sl-empty-state span {{ color:var(--sl-text) !important; -webkit-text-fill-color:var(--sl-text) !important; opacity:1 !important; }}
 .sl-empty-state .sl-empty-icon {{ color:var(--sl-blue) !important; -webkit-text-fill-color:var(--sl-blue) !important; font-size:1.15rem; flex:0 0 auto; }}
+.sl-manual-tip {{
+  display:flex; align-items:flex-start; gap:.7rem;
+  width:100%; box-sizing:border-box;
+  padding:1rem 1.15rem;
+  margin:.5rem 0 1rem;
+  border-radius:12px;
+  background:var(--sl-surface2) !important;
+  color:var(--sl-text) !important;
+  border:1px solid var(--sl-line) !important;
+  border-left:4px solid var(--sl-blue) !important;
+  font-size:.96rem; line-height:1.55; font-weight:550;
+  opacity:1 !important;
+}}
+.sl-manual-tip span {{
+  color:var(--sl-text) !important;
+  -webkit-text-fill-color:var(--sl-text) !important;
+  opacity:1 !important;
+}}
+.sl-manual-tip .sl-tip-icon {{
+  color:var(--sl-blue) !important;
+  -webkit-text-fill-color:var(--sl-blue) !important;
+  font-size:1.12rem; flex:0 0 auto;
+}}
 @keyframes sl-enter {{ from {{ opacity:0; transform:translateY(10px); }} to {{ opacity:1; transform:translateY(0); }} }}
 @keyframes sl-rise {{ from {{ opacity:0; transform:translateY(12px); }} to {{ opacity:1; transform:translateY(0); }} }}
 @keyframes sl-sun {{ from {{ transform:translateY(2px) scale(.92); opacity:.45; }} to {{ transform:translateY(-10px) scale(1.12); opacity:.9; }} }}
@@ -611,19 +634,6 @@ with dark_col:
               use_container_width=True, on_click=set_theme, args=(True,))
 
 with st.sidebar:
-    st.markdown("### " + ("Navegación" if lang == "es" else "Navigation"))
-    nav_icons = ["⌂", "▤", "∫", "⚗", "◷", "▧", "ⓘ"]
-    for idx, label in enumerate(T["nav"]):
-        active = st.session_state.page_index == idx
-        st.button(
-            f"{nav_icons[idx]}   {label}",
-            key=f"nav_page_{idx}",
-            type="primary" if active else "secondary",
-            use_container_width=True,
-            on_click=set_page,
-            args=(idx,),
-        )
-
     # Ilustración decorativa del panel solar: SVG transparente, adaptable a ambos temas.
     st.markdown(
         """
@@ -698,6 +708,20 @@ with st.sidebar:
         """,
         unsafe_allow_html=True,
     )
+
+    st.markdown("### " + ("Navegación" if lang == "es" else "Navigation"))
+    nav_icons = ["⌂", "▤", "∫", "⚗", "◷", "▧", "ⓘ"]
+    for idx, label in enumerate(T["nav"]):
+        active = st.session_state.page_index == idx
+        st.button(
+            f"{nav_icons[idx]}   {label}",
+            key=f"nav_page_{idx}",
+            type="primary" if active else "secondary",
+            use_container_width=True,
+            on_click=set_page,
+            args=(idx,),
+        )
+
     st.divider()
     st.markdown("### ☀️ " + T["model"])
     st.caption(T["institution"])
@@ -1461,9 +1485,11 @@ elif page == T["nav"][6]:
             del modelo.
             """
         )
-        st.info(
-            "Recomendación: comienza con los valores predeterminados, pulsa Analizar, modifica un parámetro "
-            "a la vez y compara cómo cambian las curvas, la energía y las conclusiones."
+        st.markdown(
+            '<div class="sl-manual-tip"><span class="sl-tip-icon">💡</span>'
+            '<span><strong>Recomendación:</strong> comienza con los valores predeterminados, pulsa Analizar, '
+            'modifica un parámetro a la vez y compara cómo cambian las curvas, la energía y las conclusiones.</span></div>',
+            unsafe_allow_html=True,
         )
     else:
         section_heading(
@@ -1573,9 +1599,11 @@ elif page == T["nav"][6]:
             their experimental results are included and distinguished from the model estimate.
             """
         )
-        st.info(
-            "Tip: start with the default values, press Analyze, change one parameter at a time and compare "
-            "how the curves, energy and conclusions respond."
+        st.markdown(
+            '<div class="sl-manual-tip"><span class="sl-tip-icon">💡</span>'
+            '<span><strong>Tip:</strong> start with the default values, press Analyze, change one parameter '
+            'at a time and compare how the curves, energy and conclusions respond.</span></div>',
+            unsafe_allow_html=True,
         )
 
 
