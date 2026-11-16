@@ -34,10 +34,53 @@ st.session_state.dark = st.toggle("🌙 Modo oscuro / Dark mode", value=st.sessi
 dark = st.session_state.dark
 bg, fg, panel = ("#0B1B30","#F3F7FC","#142B45") if dark else ("#F4F7FC","#172B49","#FFFFFF")
 st.markdown(f"""<style>
-.stApp{{background:{bg};color:{fg}}} [data-testid="stSidebar"]{{background:{panel}}}
-[data-testid="stMetric"]{{background:{panel};border:1px solid #9bb5d022;border-radius:16px;padding:12px}}
-.hero{{padding:26px;border-radius:22px;background:linear-gradient(110deg,#2457D622,#10A66A20,#7042C722);border:1px solid #7d9fc044}}
-.hero h1{{font-size:2.5rem;font-weight:850;color:{fg};margin:0}} .muted{{color:{fg};opacity:.75}}
+:root {{ color-scheme: {"dark" if dark else "light"}; }}
+.stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {{
+    background: {bg} !important; color: {fg} !important;
+}}
+[data-testid="stSidebar"], [data-testid="stSidebar"] > div {{
+    background: {panel} !important; color: {fg} !important;
+}}
+/* Contraste explícito para texto, navegación, controles y métricas */
+.stApp, .stApp p, .stApp span, .stApp label, .stApp li,
+.stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp strong,
+[data-testid="stSidebar"] p, [data-testid="stSidebar"] span,
+[data-testid="stSidebar"] label, [data-testid="stSidebar"] li,
+[data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3, [data-testid="stSidebar"] strong {{
+    color: {fg} !important;
+}}
+[data-testid="stMetric"], [data-testid="stMetric"] label,
+[data-testid="stMetric"] div, [data-testid="stMetric"] p {{
+    color: {fg} !important;
+}}
+[data-testid="stRadio"] label, [data-testid="stCheckbox"] label,
+[data-testid="stToggle"] label, [data-testid="stSelectbox"] label,
+[data-testid="stNumberInput"] label, [data-testid="stSlider"] label,
+[data-testid="stFileUploader"] label {{
+    color: {fg} !important;
+}}
+.stMarkdown, .stCaption, [data-testid="stCaptionContainer"] {{
+    color: {fg} !important;
+}}
+.stButton button, .stDownloadButton button {{
+    border-radius: 10px; font-weight: 650;
+}}
+.hero {{
+    padding: 30px 34px; border-radius: 22px;
+    background: linear-gradient(110deg,#2457D622,#10A66A20,#7042C722);
+    border: 1px solid #7d9fc044; margin-bottom: 14px;
+}}
+.hero h1 {{ font-size: clamp(2rem,3vw,2.8rem); font-weight: 850; color: {fg} !important; margin: 0; }}
+.hero .muted {{ color: {fg} !important; opacity: .82; }}
+[data-testid="stMetric"] {{
+    background: {panel} !important; border: 1px solid #9bb5d044;
+    border-radius: 16px; padding: 16px;
+}}
+[data-testid="stPlotlyChart"], [data-testid="stImage"], [data-testid="stDataFrame"] {{
+    border-radius: 14px;
+}}
+hr {{ border-color: #9bb5d055 !important; }}
 </style>""", unsafe_allow_html=True)
 c1,c2 = st.columns([1,4])
 with c1:
