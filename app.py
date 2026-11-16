@@ -380,7 +380,7 @@ st.markdown(f"""<style>
   position:relative; overflow:hidden; min-height:190px; padding:2rem 2.2rem;
   border-radius:20px; margin:.3rem 0 1.25rem 0;
   background-image:linear-gradient(90deg,rgba(8,28,53,.92) 0%,rgba(8,35,62,.78) 42%,rgba(8,35,62,.1) 100%),
-  url("https://images.unsplash.com/photo-1768839727824-28d6f0dcd1d1?auto=format&fit=crop&fm=jpg&q=82&w=1800");
+  url("https://images.unsplash.com/photo-1756913455114-182d7584ed49?auto=format&fit=crop&fm=jpg&q=82&w=1800");
   background-size:cover; background-position:center 52%;
   box-shadow:0 12px 32px rgba(12,35,65,.15);
   animation:sl-enter .7s ease both;
@@ -647,7 +647,7 @@ if page == T["nav"][0]:
             st.markdown(f'<div class="sl-feature">{label}</div>', unsafe_allow_html=True)
     st.markdown(
         f'<div class="sl-footer">Solar Lab – Integral Insights · {T["institution"]}<br>'
-        'Foto ilustrativa: Unsplash · Sasun Bughdaryan</div>',
+        'Foto: Vlad Burac · Unsplash</div>',
         unsafe_allow_html=True,
     )
 
