@@ -568,7 +568,7 @@ html body .stApp .sl-hero .sl-hero-content p {{
 logo_uni = ASSETS / "logo_universidad_simon_bolivar.png"
 logo_program = ASSETS / ("logo_ingenieria_multimedia_oscuro.png" if dark else "logo_ingenieria_multimedia_claro.png")
 
-main_header, lang_es_col, lang_en_col, light_col, dark_col = st.columns([5.8, 1.0, 1.0, 1.0, 1.0], gap="small")
+main_header, lang_es_col, lang_en_col, light_col, dark_col = st.columns([5.4, 1.2, 1.2, 1.0, 1.0], gap="small")
 with main_header:
     uni_col, title_col, program_col = st.columns([2.0, 4.6, 0.7], vertical_alignment="center")
     with uni_col:
@@ -587,8 +587,8 @@ with lang_es_col:
     st.button("Español", key="lang_es_btn", type="primary" if lang == "es" else "secondary",
               use_container_width=True, on_click=set_language, args=("Español (Colombia)",))
 with lang_en_col:
-    st.button("English (USA)", key="lang_en_btn", type="primary" if lang == "en" else "secondary",
-              use_container_width=True, on_click=set_language, args=("English (USA)",))
+    st.button("English", key="lang_en_btn", type="primary" if lang == "en" else "secondary",
+              use_container_width=True, help="English (USA)", on_click=set_language, args=("English (USA)",))
 with light_col:
     st.button("☀️ Claro", key="theme_light_btn", type="primary" if not dark else "secondary",
               use_container_width=True, on_click=set_theme, args=(False,))
