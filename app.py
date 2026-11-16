@@ -18,7 +18,7 @@ st.set_page_config(
     page_title="Solar Lab – Integral Insights",
     page_icon="☀️",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="auto",
 )
 
 ROOT = Path(__file__).parent
@@ -599,7 +599,226 @@ html body .stApp .sl-hero .sl-hero-content p {{
   -webkit-text-fill-color:var(--sl-text) !important;
 }}
 
-</style>""", unsafe_allow_html=True)
+
+/* Responsive layout: desktop, tablet and mobile */
+img, svg, canvas {{
+  max-width:100%;
+  height:auto;
+}}
+[data-testid="stMainBlockContainer"] {{
+  width:100% !important;
+  box-sizing:border-box !important;
+}}
+.stApp [data-testid="stHorizontalBlock"] {{
+  min-width:0;
+}}
+.stApp [data-testid="stHorizontalBlock"] > [data-testid="column"] {{
+  min-width:0;
+}}
+[data-testid="stPlotlyChart"], [data-testid="stImage"], [data-testid="stDataFrame"],
+[data-testid="stTable"], [data-testid="stMetric"] {{
+  max-width:100%;
+  box-sizing:border-box;
+}}
+[data-testid="stDataFrame"] {{
+  overflow-x:auto !important;
+}}
+.sidebar-solar-art {{
+  max-width:100%;
+  overflow:hidden;
+}}
+.sidebar-solar-art svg {{
+  width:min(190px,76%);
+  height:auto;
+}}
+
+@media (max-width: 1024px) {{
+  [data-testid="stMainBlockContainer"] {{
+    max-width:100% !important;
+    padding-left:1.15rem !important;
+    padding-right:1.15rem !important;
+  }}
+  .sl-topbar h2 {{
+    font-size:clamp(1.15rem,2.2vw,1.5rem) !important;
+  }}
+  .sl-topbar small {{
+    font-size:.62rem !important;
+    letter-spacing:.045em !important;
+    line-height:1.4 !important;
+  }}
+  .sl-hero {{
+    min-height:175px;
+    padding:1.5rem;
+    background-position:center;
+  }}
+  [data-testid="stMetric"] {{
+    min-height:98px;
+    padding:.85rem !important;
+  }}
+  .sl-conclusion {{
+    min-height:0;
+  }}
+  .sidebar-solar-art svg {{
+    width:min(170px,74%);
+  }}
+}}
+
+@media (max-width: 768px) {{
+  [data-testid="stMainBlockContainer"] {{
+    padding-top:.8rem !important;
+    padding-left:.9rem !important;
+    padding-right:.9rem !important;
+  }}
+  .stApp [data-testid="stHorizontalBlock"] {{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    align-items:stretch !important;
+    gap:.7rem !important;
+  }}
+  .stApp [data-testid="stHorizontalBlock"] > [data-testid="column"] {{
+    flex:1 1 calc(50% - .7rem) !important;
+    width:calc(50% - .7rem) !important;
+    min-width:0 !important;
+    max-width:100% !important;
+  }}
+  .sl-topbar {{
+    min-height:0;
+    padding:.35rem 0 .55rem;
+  }}
+  .sl-topbar h2 {{
+    font-size:clamp(1.05rem,3vw,1.4rem) !important;
+    overflow-wrap:anywhere;
+  }}
+  .sl-topbar small {{
+    display:block;
+    font-size:.58rem !important;
+    white-space:normal !important;
+  }}
+  .sl-hero {{
+    min-height:165px;
+    padding:1.2rem;
+    border-radius:16px;
+  }}
+  .sl-hero h1 {{
+    font-size:clamp(1.35rem,4.5vw,1.85rem) !important;
+  }}
+  .sl-hero p {{
+    font-size:.9rem !important;
+    line-height:1.45;
+  }}
+  .section-title, .sl-section-title {{
+    font-size:1.18rem !important;
+  }}
+  [data-testid="stMetric"] {{
+    min-height:88px;
+    padding:.75rem !important;
+  }}
+  [data-testid="stMetricValue"] {{
+    font-size:clamp(1.05rem,3.8vw,1.5rem) !important;
+    overflow-wrap:anywhere;
+  }}
+  .sl-conclusion {{
+    padding:.9rem;
+    min-height:0;
+  }}
+  .stApp div[data-testid="stButton"] > button,
+  .stApp div[data-testid="stDownloadButton"] > button {{
+    min-height:2.8rem;
+    height:auto;
+    white-space:normal !important;
+    overflow-wrap:anywhere;
+    padding:.55rem .7rem !important;
+    font-size:.9rem !important;
+  }}
+  [data-testid="stFileUploader"] {{
+    width:100%;
+  }}
+  .sidebar-solar-art svg {{
+    width:min(155px,70%);
+  }}
+}}
+
+@media (max-width: 640px) {{
+  [data-testid="stMainBlockContainer"] {{
+    padding:.65rem .7rem 1.4rem !important;
+  }}
+  .stApp [data-testid="stHorizontalBlock"] {{
+    gap:.55rem !important;
+  }}
+  .stApp [data-testid="stHorizontalBlock"] > [data-testid="column"] {{
+    flex:1 1 100% !important;
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+  }}
+  .sl-topbar h2 {{
+    font-size:1.18rem !important;
+    line-height:1.2 !important;
+  }}
+  .sl-topbar small {{
+    font-size:.55rem !important;
+    line-height:1.35 !important;
+  }}
+  .sl-hero {{
+    min-height:155px;
+    padding:1rem;
+    background-position:60% center;
+  }}
+  .sl-hero h1 {{
+    font-size:1.35rem !important;
+  }}
+  .sl-hero p {{
+    font-size:.84rem !important;
+  }}
+  .section-kicker {{
+    font-size:.66rem !important;
+    overflow-wrap:anywhere;
+  }}
+  .section-title, .sl-section-title {{
+    font-size:1.08rem !important;
+    line-height:1.3 !important;
+  }}
+  [data-testid="stMetric"] {{
+    min-height:0;
+    padding:.8rem !important;
+  }}
+  [data-testid="stMetricLabel"] {{
+    font-size:.78rem !important;
+    white-space:normal !important;
+  }}
+  [data-testid="stMetricValue"] {{
+    font-size:1.45rem !important;
+  }}
+  .sl-conclusion, .sl-manual-tip, .sl-empty-state {{
+    padding:.85rem !important;
+    font-size:.9rem !important;
+  }}
+  [data-testid="stExpander"] summary {{
+    font-size:.9rem !important;
+  }}
+  [data-testid="stFileUploader"] section {{
+    padding:.65rem !important;
+  }}
+  .sidebar-solar-art {{
+    padding:.6rem 0 .8rem !important;
+  }}
+  .sidebar-solar-art svg {{
+    width:145px;
+    max-width:75%;
+  }}
+  .footer, .sl-footer {{
+    font-size:.7rem !important;
+    line-height:1.45 !important;
+    overflow-wrap:anywhere;
+  }}
+  .stApp div[data-testid="stButton"] > button,
+  .stApp div[data-testid="stDownloadButton"] > button {{
+    width:100%;
+    font-size:.92rem !important;
+  }}
+}}
+
+    </style>""", unsafe_allow_html=True)
 
 # Main institutional header: university identity is prominent in the content frame.
 logo_uni = ASSETS / "logo_universidad_simon_bolivar.png"
