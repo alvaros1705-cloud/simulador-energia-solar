@@ -700,6 +700,14 @@ def build_dynamic_conclusions(
 ):
     """Generate evidence-based conclusions from the currently selected model and optional CSV."""
     peak_hour = min(max(12.0, float(start_hour)), float(end_hour))
+
+    def format_clock(hour_value):
+        total_minutes = int(round(float(hour_value) * 60))
+        return f"{(total_minutes // 60) % 24:02d}:{total_minutes % 60:02d}"
+
+    start_label = format_clock(start_hour)
+    end_label = format_clock(end_hour)
+    peak_label = format_clock(peak_hour)
     total_peak = float(power(peak_hour, peak_per_panel)) * int(panel_count)
     initial_power = float(power(start_hour, peak_per_panel)) * int(panel_count)
     final_power = float(power(end_hour, peak_per_panel)) * int(panel_count)
@@ -713,32 +721,32 @@ def build_dynamic_conclusions(
     includes_afternoon_fall = float(end_hour) > 12.0
     if includes_morning_rise and includes_afternoon_fall:
         curve_behaviour_es = (
-            f"La potencia aumenta desde {initial_power:,.1f} W a las {start_hour:05.2f} h "
+            f"La potencia aumenta desde {initial_power:,.1f} W a las {start_label} "
             f"hasta su máximo al mediodía, y después desciende hasta {final_power:,.1f} W "
-            f"a las {end_hour:05.2f} h."
+            f"a las {end_label}."
         )
         curve_behaviour_en = (
-            f"Power rises from {initial_power:,.1f} W at {start_hour:05.2f} h "
+            f"Power rises from {initial_power:,.1f} W at {start_label} "
             f"to its noon peak, then decreases to {final_power:,.1f} W "
-            f"at {end_hour:05.2f} h."
+            f"at {end_label}."
         )
     elif includes_morning_rise:
         curve_behaviour_es = (
-            f"En el intervalo seleccionado, la potencia aumenta desde {initial_power:,.1f} W "
+            f"En el intervalo seleccionado, la potencia aumenta desde {initial_power:,.1f} W a las {start_label} "
             f"hasta el máximo de {total_peak:,.1f} W al mediodía."
         )
         curve_behaviour_en = (
-            f"Within the selected interval, power rises from {initial_power:,.1f} W "
+            f"Within the selected interval, power rises from {initial_power:,.1f} W at {start_label} "
             f"to its {total_peak:,.1f} W peak at noon."
         )
     elif includes_afternoon_fall:
         curve_behaviour_es = (
             f"El intervalo comienza en el máximo de {total_peak:,.1f} W al mediodía "
-            f"y desciende hasta {final_power:,.1f} W a las {end_hour:05.2f} h."
+            f"y desciende hasta {final_power:,.1f} W a las {end_label}."
         )
         curve_behaviour_en = (
             f"The interval begins at the {total_peak:,.1f} W noon peak "
-            f"and declines to {final_power:,.1f} W at {end_hour:05.2f} h."
+            f"and declines to {final_power:,.1f} W at {end_label}."
         )
     else:
         curve_behaviour_es = (
@@ -753,7 +761,7 @@ def build_dynamic_conclusions(
             (
                 "Comportamiento de la potencia",
                 f"Con {int(panel_count)} panel(es) de {float(peak_per_panel):,.1f} W cada uno, "
-                f"el modelo alcanza {total_peak:,.1f} W a las {peak_hour:05.2f} h. "
+                f"el modelo alcanza {total_peak:,.1f} W a las {peak_label}. "
                 + curve_behaviour_es
             ),
             (
@@ -770,7 +778,7 @@ def build_dynamic_conclusions(
             (
                 "Power behaviour",
                 f"With {int(panel_count)} panel(s) rated at {float(peak_per_panel):,.1f} W each, "
-                f"the model reaches {total_peak:,.1f} W at {peak_hour:05.2f} h. "
+                f"the model reaches {total_peak:,.1f} W at {peak_label}. "
                 + curve_behaviour_en
             ),
             (
