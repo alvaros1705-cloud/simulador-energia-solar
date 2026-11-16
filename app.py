@@ -329,8 +329,23 @@ st.markdown(
     [data-testid="stDataFrame"], [data-testid="stTable"] {{
       border:1px solid var(--sl-line); border-radius:12px; overflow:hidden;
     }}
-    input, textarea, [data-baseweb="select"] > div {{
+    input, textarea, [data-baseweb="select"] > div,
+    [data-baseweb="input"] > div, [data-baseweb="textarea"] > div {{
+      background:var(--sl-surface) !important;
+      color:var(--sl-text) !important;
       border-color:var(--sl-line) !important;
+    }}
+    [data-baseweb="select"] *, [data-baseweb="input"] *,
+    [data-baseweb="textarea"] *, [data-testid="stNumberInput"] button {{
+      color:var(--sl-text) !important;
+    }}
+    [data-testid="stRadio"] div[role="radiogroup"] {{
+      display:flex; flex-wrap:wrap; gap:.3rem; padding:.45rem;
+      background:var(--sl-surface); border:1px solid var(--sl-line);
+      border-radius:14px;
+    }}
+    [data-testid="stRadio"] div[role="radio"] {{
+      padding:.25rem .6rem; border-radius:10px;
     }}
     hr {{ border-color:var(--sl-line) !important; }}
     a {{ color:var(--sl-blue) !important; }}
@@ -506,10 +521,11 @@ elif page == T["nav"][1]:
                 st.error(T["invalid_csv"])
             else:
                 data = source[["hora", "potencia_w"]].copy()
-                incomplete_count = int(data.isna().any(axis=1).sum())
-                data["hora"] = data["hora"].apply(parse_hour)
+                data["hora"] = data["hora"].apply(
+                    lambda value: np.nan if pd.isna(value) else parse_hour(value)
+                )
                 data["potencia_w"] = pd.to_numeric(data["potencia_w"], errors="coerce")
-                incomplete_count += int(data.isna().any(axis=1).sum()) - incomplete_count
+                incomplete_count = int(data.isna().any(axis=1).sum())
                 data = data.dropna().sort_values("hora")
                 negative_count = int((data["potencia_w"] < 0).sum())
                 duplicate_count = int(data.duplicated(subset=["hora"]).sum())
