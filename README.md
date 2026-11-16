@@ -1,35 +1,39 @@
 # Solar Lab – Integral Insights
 
-Aplicación académica interactiva para el análisis de energía solar mediante cálculo integral, desarrollada con Python y Streamlit para la asignatura Cálculo Integral del programa de Ingeniería Multimedia de la Universidad Simón Bolívar.
+Laboratorio web académico para modelar y analizar la energía solar mediante cálculo integral. Desarrollado en Python y Streamlit para la asignatura **Cálculo Integral** del programa de **Ingeniería Multimedia** de la **Universidad Simón Bolívar**.
 
-## Identidad académica
+## Identidad institucional
 - Universidad Simón Bolívar.
 - Programa: Ingeniería Multimedia.
 - Asignatura: Cálculo Integral.
-- Equipo:
-  - Sara Gáfaro Salamanca
-  - Leidy Stephania Delgado Galvis
-  - Angel David Carrascal Claro
-  - Samuel David Jaimes Estrada
-- Se conservan los logotipos institucionales existentes en `assets/`.
+- Integrantes:
+  1. Sara Gáfaro Salamanca
+  2. Leidy Stephania Delgado Galvis
+  3. Angel David Carrascal Claro
+  4. Samuel David Jaimes Estrada
+- Se conservan los tres recursos gráficos institucionales originales dentro de `assets/`.
 
-## Funcionalidades
-1. Interfaz en español (Colombia) e inglés (USA).
-2. Modo claro principal y modo oscuro alternativo.
-3. Panel con potencia máxima, energía estimada, potencia promedio y diferencia de integración.
-4. Modelo cuadrático de potencia entre 6:00 y 18:00: `P(t)=Pmax(1-(t-12)^2/36)`.
-5. Integración analítica y verificación numérica mediante regla del trapecio.
-6. Comparación de escenarios de -20 %, base y +20 %.
-7. Carga de mediciones CSV con columnas `hora` y `potencia_w`.
-8. Revisión orientativa de datos incompletos, duplicados, potencias negativas y posibles valores atípicos.
-9. Integración de mediciones, energía acumulada y ajuste cuadrático con R².
-10. Laboratorio de hipótesis para variar la potencia máxima.
-11. Historial de escenarios durante la sesión.
-12. Ejercicios geométricos de área rectangular y volumen de revolución.
-13. Exportación de informe PDF, datos CSV y paquete ZIP.
+## Experiencia de usuario
+- Diseño académico con navegación superior y panel lateral de parámetros.
+- Tema claro institucional como presentación principal y modo oscuro alternativo.
+- Contraste de texto, controles, métricas y tablas definido mediante `.streamlit/config.toml` y estilos de interfaz.
+- Español (Colombia) e inglés (USA).
+- Interfaz adaptable al ancho de pantalla.
 
-## Instalación local
-Python 3.10 o superior:
+## Herramientas académicas
+1. Modelo cuadrático de potencia entre 6:00 y 18:00: `P(t)=Pmax(1-(t-12)^2/36)`.
+2. Cálculo analítico de la integral definida y verificación numérica mediante regla del trapecio.
+3. Indicadores de potencia máxima, potencia promedio y energía estimada.
+4. Comparación de escenarios de -20 %, base y +20 %.
+5. Carga de mediciones CSV con columnas `hora` y `potencia_w`.
+6. Revisión orientativa de datos incompletos, horas duplicadas, potencias negativas y posibles valores atípicos.
+7. Integración de mediciones, energía acumulada y ajuste cuadrático con R².
+8. Laboratorio de hipótesis para variar la potencia máxima e historial de escenarios de la sesión.
+9. Aplicaciones geométricas: área de paneles y volumen de revolución.
+10. Exportación de informe PDF, datos CSV y paquete ZIP.
+
+## Ejecución local
+Requiere Python 3.10 o superior.
 
 ```bash
 python -m venv .venv
@@ -42,7 +46,17 @@ streamlit run app.py
 ```
 
 ## Despliegue
-La aplicación está preparada para Streamlit Community Cloud, conectada al repositorio existente `alvaros1705-cloud/simulador-energia-solar`, rama `main`, archivo principal `app.py`.
+Repositorio: `alvaros1705-cloud/simulador-energia-solar`  
+Rama: `main`  
+Archivo principal: `app.py`  
+Configuración visual: `.streamlit/config.toml`
 
-## Consideraciones
-Los parámetros iniciales son hipotéticos y no representan mediciones certificadas. El indicador de calidad es orientativo. El ajuste cuadrático no debe extrapolarse fuera del intervalo observado. El historial se conserva solo durante la sesión actual y no es almacenamiento permanente.
+La aplicación se encuentra conectada a Streamlit Community Cloud.
+
+## Validación
+El flujo de GitHub Actions ubicado en `.github/workflows/validate.yml` ejecuta:
+- Compilación de sintaxis de `app.py`.
+- Pruebas de regresión matemática para la energía analítica y la integración numérica.
+
+## Consideraciones académicas
+Los valores iniciales representan una aproximación didáctica, no mediciones certificadas. El indicador de calidad de datos es orientativo. El ajuste cuadrático no debe extrapolarse fuera del intervalo observado. El historial se conserva durante la sesión de la aplicación.
