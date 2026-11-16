@@ -40,6 +40,9 @@ TEXT = {
         "peak": "Potencia máxima por panel",
         "start": "Hora inicial",
         "end": "Hora final",
+        "analyze": "🔎 Analizar parámetros",
+        "analysis_hint": "Los cambios se aplican a las gráficas y conclusiones al pulsar Analizar.",
+        "analysis_updated": "Análisis actualizado con los parámetros seleccionados.",
         "intro": "Explora el comportamiento de la potencia solar, calcula la energía acumulada mediante integrales y contrasta el modelo con mediciones experimentales.",
         "power": "Potencia máxima total",
         "energy": "Energía estimada",
@@ -127,6 +130,9 @@ TEXT = {
         "peak": "Maximum power per panel",
         "start": "Start time",
         "end": "End time",
+        "analyze": "🔎 Analyze parameters",
+        "analysis_hint": "Parameter changes update the charts and conclusions only after you press Analyze.",
+        "analysis_updated": "Analysis updated with the selected parameters.",
         "intro": "Explore solar power behaviour, calculate accumulated energy using integrals, and compare the model with experimental measurements.",
         "power": "Total peak power",
         "energy": "Estimated energy",
@@ -620,10 +626,29 @@ with st.sidebar:
     st.divider()
     st.markdown("### ☀️ " + T["model"])
     st.caption(T["institution"])
-    panels = st.number_input(T["panels"], min_value=1, max_value=100, value=1, step=1)
-    pmax = st.slider(T["peak"] + " (W)", min_value=50, max_value=600, value=300, step=10)
-    start = st.slider(T["start"], min_value=6.0, max_value=12.0, value=6.0, step=0.5)
-    end = st.slider(T["end"], min_value=12.0, max_value=18.0, value=18.0, step=0.5)
+    with st.form("solar_analysis_parameters", clear_on_submit=False):
+        st.caption(T["analysis_hint"])
+        panels = st.number_input(
+            T["panels"], min_value=1, max_value=100, value=1, step=1,
+            key="analysis_panels",
+        )
+        pmax = st.slider(
+            T["peak"] + " (W)", min_value=50, max_value=600, value=300, step=10,
+            key="analysis_peak",
+        )
+        start = st.slider(
+            T["start"], min_value=6.0, max_value=12.0, value=6.0, step=0.5,
+            key="analysis_start",
+        )
+        end = st.slider(
+            T["end"], min_value=12.0, max_value=18.0, value=18.0, step=0.5,
+            key="analysis_end",
+        )
+        analyze_clicked = st.form_submit_button(
+            T["analyze"], type="primary", use_container_width=True,
+        )
+    if analyze_clicked:
+        st.success(T["analysis_updated"])
     st.divider()
     st.markdown("**" + T["team"] + "**")
     for member in TEAM:
