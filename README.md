@@ -1,47 +1,48 @@
-# Simulador de aprovechamiento de energía solar
+# Solar Lab – Integral Insights
 
-Aplicación web académica desarrollada en Python con Streamlit para el proyecto de Cálculo Integral del programa de Ingeniería Multimedia de la Universidad Simón Bolívar.
+Aplicación académica interactiva para el análisis de energía solar mediante cálculo integral, desarrollada con Python y Streamlit para la asignatura Cálculo Integral del programa de Ingeniería Multimedia de la Universidad Simón Bolívar.
 
-## Identidad institucional
-- Encabezado con el logo de la Universidad Simón Bolívar.
-- Pie de página con los cuatro integrantes del equipo, programa académico y asignatura.
-- Logo de Ingeniería Multimedia con variantes para tema claro y oscuro.
-- Selector de tema claro/oscuro.
-- Identidad visual con paleta azul, verde y violeta, gradientes suaves, tarjetas y botones personalizados.
-- Diseño adaptable de Streamlit para pantallas de computador, tableta y celular.
+## Identidad académica
+- Universidad Simón Bolívar.
+- Programa: Ingeniería Multimedia.
+- Asignatura: Cálculo Integral.
+- Equipo:
+  - Sara Gáfaro Salamanca
+  - Leidy Stephania Delgado Galvis
+  - Angel David Carrascal Claro
+  - Samuel David Jaimes Estrada
+- Se conservan los logotipos institucionales existentes en `assets/`.
 
 ## Funcionalidades
-- Modelo cuadrático de potencia entre las 6:00 y las 18:00.
-- Cálculo analítico de energía mediante el Teorema Fundamental del Cálculo.
-- Verificación numérica mediante la regla compuesta del trapecio.
-- Modificación de potencia máxima, intervalo horario y cantidad de paneles.
-- Comparación de escenarios hipotéticos de -20 %, base y +20 %.
-- Cálculo de superficie rectangular de paneles.
-- Cálculo de volumen de un sólido de revolución por el método de discos.
-- Carga opcional de mediciones reales en CSV, separadas del modelo hipotético.
-- Descarga de resumen de resultados en CSV.
+1. Interfaz en español (Colombia) e inglés (USA).
+2. Modo claro principal y modo oscuro alternativo.
+3. Panel con potencia máxima, energía estimada, potencia promedio y diferencia de integración.
+4. Modelo cuadrático de potencia entre 6:00 y 18:00: `P(t)=Pmax(1-(t-12)^2/36)`.
+5. Integración analítica y verificación numérica mediante regla del trapecio.
+6. Comparación de escenarios de -20 %, base y +20 %.
+7. Carga de mediciones CSV con columnas `hora` y `potencia_w`.
+8. Revisión orientativa de datos incompletos, duplicados, potencias negativas y posibles valores atípicos.
+9. Integración de mediciones, energía acumulada y ajuste cuadrático con R².
+10. Laboratorio de hipótesis para variar la potencia máxima.
+11. Historial de escenarios durante la sesión.
+12. Ejercicios geométricos de área rectangular y volumen de revolución.
+13. Exportación de informe PDF, datos CSV y paquete ZIP.
 
-## Archivos del repositorio
-- `app.py`: aplicación principal.
-- `requirements.txt`: dependencias.
-- `plantilla_mediciones_reales.csv`: plantilla para mediciones reales.
-- `assets/`: logos institucionales y del programa.
+## Instalación local
+Python 3.10 o superior:
 
-## Publicación en Streamlit Community Cloud
-1. Subir todos los archivos y la carpeta `assets` al repositorio de GitHub, conservando la estructura.
-2. En Streamlit Community Cloud, seleccionar el repositorio.
-3. Elegir la rama `main`.
-4. Indicar `app.py` como archivo principal.
-5. Desplegar la aplicación.
+```bash
+python -m venv .venv
+# Windows
+.venv\\Scripts\\activate
+# macOS/Linux
+source .venv/bin/activate
+pip install -r requirements.txt
+streamlit run app.py
+```
 
-## Modelo matemático
-`P(t) = Pmax * (1 - (t - 12)^2 / 36)`, para `6 <= t <= 18`.
+## Despliegue
+La aplicación está preparada para Streamlit Community Cloud, conectada al repositorio existente `alvaros1705-cloud/simulador-energia-solar`, rama `main`, archivo principal `app.py`.
 
-Con `Pmax = 300 W`, la función alcanza 300 W a las 12:00 y es cero a las 6:00 y a las 18:00. La energía para un intervalo `[a,b]` se calcula integrando la función. Para un panel entre las 6:00 y las 18:00, el resultado analítico es 2400 Wh = 2.4 kWh.
-
-## Advertencias académicas
-- Los parámetros iniciales son hipotéticos y no representan mediciones de una instalación real.
-- Los factores 0.8, 1.0 y 1.2 son escenarios de variación de potencia máxima, no eficiencias medidas.
-- El cálculo de superficie es un ejercicio geométrico rectangular y no equivale al área bajo la curva de potencia.
-- El sólido de revolución es ilustrativo; no es un diseño estructural validado.
-- La interfaz aprovecha el diseño adaptable de Streamlit; debe comprobarse en navegadores y tamaños de pantalla reales antes de su entrega definitiva.
+## Consideraciones
+Los parámetros iniciales son hipotéticos y no representan mediciones certificadas. El indicador de calidad es orientativo. El ajuste cuadrático no debe extrapolarse fuera del intervalo observado. El historial se conserva solo durante la sesión actual y no es almacenamiento permanente.
