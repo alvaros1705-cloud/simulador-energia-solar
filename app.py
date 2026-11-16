@@ -421,16 +421,25 @@ st.markdown(f"""<style>
 @media(max-width:850px) {{ .sl-hero {{ min-height:210px; padding:1.4rem; background-position:62% center; }} .sl-hero h1 {{ font-size:1.65rem; }} }}
 </style>""", unsafe_allow_html=True)
 
-# Institutional identity and real button navigation.
+# Main institutional header: university identity is prominent in the content frame.
 logo_uni = ASSETS / "logo_universidad_simon_bolivar.png"
 logo_program = ASSETS / ("logo_ingenieria_multimedia_oscuro.png" if dark else "logo_ingenieria_multimedia_claro.png")
 
-main_header, lang_es_col, lang_en_col, light_col, dark_col = st.columns([4.6, 1.15, 1.15, 1.0, 1.0], gap="small")
+main_header, lang_es_col, lang_en_col, light_col, dark_col = st.columns([5.0, 1.12, 1.12, 1.0, 1.0], gap="small")
 with main_header:
-    st.markdown(
-        '<div class="sl-topbar"><span style="font-size:2rem">☀️</span><div><h2>Solar Lab – Integral Insights</h2><small>UNIVERSIDAD SIMÓN BOLÍVAR · INGENIERÍA MULTIMEDIA</small></div></div>',
-        unsafe_allow_html=True,
-    )
+    uni_col, title_col, program_col = st.columns([1.35, 5.2, 0.9], vertical_alignment="center")
+    with uni_col:
+        if logo_uni.exists():
+            st.image(str(logo_uni), width=142)
+    with title_col:
+        st.markdown(
+            '<div class="sl-topbar"><div><h2>Solar Lab – Integral Insights</h2>'
+            '<small>UNIVERSIDAD SIMÓN BOLÍVAR · INGENIERÍA MULTIMEDIA</small></div></div>',
+            unsafe_allow_html=True,
+        )
+    with program_col:
+        if logo_program.exists():
+            st.image(str(logo_program), width=76)
 with lang_es_col:
     st.button("🇨🇴 Español", key="lang_es_btn", type="primary" if lang == "es" else "secondary",
               use_container_width=True, on_click=set_language, args=("Español (Colombia)",))
@@ -445,14 +454,7 @@ with dark_col:
               use_container_width=True, on_click=set_theme, args=(True,))
 
 with st.sidebar:
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
-    if logo_uni.exists():
-        st.image(str(logo_uni), width=185)
-    if logo_program.exists():
-        st.image(str(logo_program), width=105)
-    st.markdown("### " + ("Solar Lab" if lang == "en" else "Laboratorio Solar"))
-    st.caption(T["institution"])
-    st.divider()
+    st.markdown("### " + ("Navegación" if lang == "es" else "Navigation"))
     nav_icons = ["⌂", "▤", "∫", "⚗", "◷", "▧"]
     for idx, label in enumerate(T["nav"]):
         active = st.session_state.page_index == idx
@@ -464,6 +466,13 @@ with st.sidebar:
             on_click=set_page,
             args=(idx,),
         )
+    st.divider()
+    st.markdown("### ☀️ " + T["model"])
+    st.caption(T["institution"])
+    panels = st.number_input(T["panels"], min_value=1, max_value=100, value=1, step=1)
+    pmax = st.slider(T["peak"] + " (W)", min_value=50, max_value=600, value=300, step=10)
+    start = st.slider(T["start"], min_value=6.0, max_value=12.0, value=6.0, step=0.5)
+    end = st.slider(T["end"], min_value=12.0, max_value=18.0, value=18.0, step=0.5)
     st.divider()
     st.markdown("**" + T["team"] + "**")
     for member in TEAM:
