@@ -553,6 +553,7 @@ elif page == T["nav"][1]:
         st.metric(T["measured_energy"], f'{quality["energy"]:,.3f} Wh')
         st.dataframe(measured, use_container_width=True, hide_index=True)
         fig = make_power_figure(measured["hora"], measured["potencia_w"], T["measurement_curve"], fill=False)
+        st.pyplot(fig, use_container_width=True)
         plt.close(fig)
         if len(measured) >= 3:
             mx = measured["hora"].to_numpy(dtype=float)
@@ -663,7 +664,7 @@ elif page == T["nav"][4]:
     if st.session_state.history:
         history_frame = pd.DataFrame(st.session_state.history)
         st.dataframe(history_frame, use_container_width=True, hide_index=True)
-        st.download_button(T["csv"], history_frame.to_csv(index=False).encode("utf-8-sig), "historial_solar_lab.csv", "text/csv")
+        st.download_button(T["csv"], history_frame.to_csv(index=False).encode("utf-8-sig"), "historial_solar_lab.csv", "text/csv")
         if st.button(T["clear"]):
             st.session_state.history = []
             st.rerun()
