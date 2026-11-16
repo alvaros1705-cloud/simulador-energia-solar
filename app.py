@@ -692,6 +692,177 @@ energy_kwh = energy_wh / 1000
 numeric_wh = integrate_trapezoid(start, end, pmax) * panels
 average_power = energy_wh / (end - start)
 
+
+def build_dynamic_conclusions(
+    language, start_hour, end_hour, peak_per_panel, panel_count,
+    calculated_energy_wh, trapezoid_energy_wh, average_watts,
+    measured_frame=None, quality_summary=None,
+):
+    """Generate evidence-based conclusions from the currently selected model and optional CSV."""
+    peak_hour = min(max(12.0, float(start_hour)), float(end_hour))
+    total_peak = float(power(peak_hour, peak_per_panel)) * int(panel_count)
+    initial_power = float(power(start_hour, peak_per_panel)) * int(panel_count)
+    final_power = float(power(end_hour, peak_per_panel)) * int(panel_count)
+    absolute_gap = abs(float(calculated_energy_wh) - float(trapezoid_energy_wh))
+    relative_gap = (
+        absolute_gap / abs(float(calculated_energy_wh)) * 100
+        if calculated_energy_wh else 0.0
+    )
+
+    includes_morning_rise = float(start_hour) < 12.0
+    includes_afternoon_fall = float(end_hour) > 12.0
+    if includes_morning_rise and includes_afternoon_fall:
+        curve_behaviour_es = (
+            f"La potencia aumenta desde {initial_power:,.1f} W a las {start_hour:05.2f} h "
+            f"hasta su máximo al mediodía, y después desciende hasta {final_power:,.1f} W "
+            f"a las {end_hour:05.2f} h."
+        )
+        curve_behaviour_en = (
+            f"Power rises from {initial_power:,.1f} W at {start_hour:05.2f} h "
+            f"to its noon peak, then decreases to {final_power:,.1f} W "
+            f"at {end_hour:05.2f} h."
+        )
+    elif includes_morning_rise:
+        curve_behaviour_es = (
+            f"En el intervalo seleccionado, la potencia aumenta desde {initial_power:,.1f} W "
+            f"hasta el máximo de {total_peak:,.1f} W al mediodía."
+        )
+        curve_behaviour_en = (
+            f"Within the selected interval, power rises from {initial_power:,.1f} W "
+            f"to its {total_peak:,.1f} W peak at noon."
+        )
+    elif includes_afternoon_fall:
+        curve_behaviour_es = (
+            f"El intervalo comienza en el máximo de {total_peak:,.1f} W al mediodía "
+            f"y desciende hasta {final_power:,.1f} W a las {end_hour:05.2f} h."
+        )
+        curve_behaviour_en = (
+            f"The interval begins at the {total_peak:,.1f} W noon peak "
+            f"and declines to {final_power:,.1f} W at {end_hour:05.2f} h."
+        )
+    else:
+        curve_behaviour_es = (
+            f"La potencia modelada se mantiene en {total_peak:,.1f} W en el intervalo seleccionado."
+        )
+        curve_behaviour_en = (
+            f"Modelled power remains at {total_peak:,.1f} W over the selected interval."
+        )
+
+    if language == "es":
+        conclusions = [
+            (
+                "Comportamiento de la potencia",
+                f"Con {int(panel_count)} panel(es) de {float(peak_per_panel):,.1f} W cada uno, "
+                f"el modelo alcanza {total_peak:,.1f} W a las {peak_hour:05.2f} h. "
+                + curve_behaviour_es
+            ),
+            (
+                "Energía generada",
+                f"La integral definida estima {float(calculated_energy_wh):,.3f} Wh "
+                f"({float(calculated_energy_wh) / 1000:,.4f} kWh) en {float(end_hour)-float(start_hour):.2f} horas. "
+                f"La potencia promedio es {float(average_watts):,.2f} W. "
+                f"La regla del trapecio difiere {absolute_gap:.6f} Wh "
+                f"({relative_gap:.6f} %) del resultado analítico."
+            ),
+        ]
+    else:
+        conclusions = [
+            (
+                "Power behaviour",
+                f"With {int(panel_count)} panel(s) rated at {float(peak_per_panel):,.1f} W each, "
+                f"the model reaches {total_peak:,.1f} W at {peak_hour:05.2f} h. "
+                + curve_behaviour_en
+            ),
+            (
+                "Energy generated",
+                f"Definite integration estimates {float(calculated_energy_wh):,.3f} Wh "
+                f"({float(calculated_energy_wh) / 1000:,.4f} kWh) over {float(end_hour)-float(start_hour):.2f} hours. "
+                f"Average power is {float(average_watts):,.2f} W. "
+                f"The trapezoidal rule differs from the analytical result by {absolute_gap:.6f} Wh "
+                f"({relative_gap:.6f} %)."
+            ),
+        ]
+
+    if measured_frame is not None and quality_summary is not None and len(measured_frame) >= 2:
+        measured_data = measured_frame.copy()
+        measured_x = pd.to_numeric(measured_data["hora"], errors="coerce").to_numpy(dtype=float)
+        measured_y = pd.to_numeric(measured_data["potencia_w"], errors="coerce").to_numpy(dtype=float)
+        usable = np.isfinite(measured_x) & np.isfinite(measured_y)
+        measured_x = measured_x[usable]
+        measured_y = measured_y[usable]
+        measured_count = int(len(measured_x))
+        measured_energy = float(quality_summary["energy"])
+        measured_r2_text_es = ""
+        measured_r2_text_en = ""
+        if measured_count >= 3 and len(np.unique(measured_x)) >= 3:
+            coefficients = np.polyfit(measured_x, measured_y, 2)
+            predicted = np.polyval(coefficients, measured_x)
+            residual_sum = float(np.sum((measured_y - predicted) ** 2))
+            total_sum = float(np.sum((measured_y - measured_y.mean()) ** 2))
+            measured_r2 = 1 - residual_sum / total_sum if total_sum else 1.0
+            measured_r2_text_es = f" El ajuste cuadrático presenta R² = {measured_r2:.4f}."
+            measured_r2_text_en = f" The quadratic fit has R² = {measured_r2:.4f}."
+
+        if language == "es":
+            reliability = (
+                f"Se analizaron {measured_count} registros válidos. El indicador orientativo de calidad "
+                f"es {float(quality_summary['score']):.0f}/100; se detectaron "
+                f"{int(quality_summary['incomplete'])} filas incompletas, "
+                f"{int(quality_summary['duplicates'])} horas duplicadas, "
+                f"{int(quality_summary['negative'])} potencias negativas y "
+                f"{int(quality_summary['outliers'])} posibles valores atípicos."
+                + measured_r2_text_es
+                + f" La energía integrada desde el CSV es {measured_energy:,.3f} Wh. "
+                "Los datos medidos se presentan como evidencia experimental y no deben confundirse "
+                "con la estimación del modelo hipotético."
+            )
+        else:
+            reliability = (
+                f"{measured_count} valid records were analysed. The indicative data-quality score is "
+                f"{float(quality_summary['score']):.0f}/100; the review found "
+                f"{int(quality_summary['incomplete'])} incomplete rows, "
+                f"{int(quality_summary['duplicates'])} duplicate times, "
+                f"{int(quality_summary['negative'])} negative power values and "
+                f"{int(quality_summary['outliers'])} potential outliers."
+                + measured_r2_text_en
+                + f" Energy integrated from the CSV is {measured_energy:,.3f} Wh. "
+                "Measured data are experimental evidence and should not be confused with "
+                "the hypothetical model estimate."
+            )
+        conclusions.append((
+            "Confiabilidad y limitaciones" if language == "es" else "Reliability and limitations",
+            reliability,
+        ))
+        source_label = (
+            "Análisis del modelo configurado acompañado de indicadores de las mediciones reales cargadas."
+            if language == "es" else
+            "Configured model analysis accompanied by indicators from the uploaded real measurements."
+        )
+    else:
+        if language == "es":
+            reliability = (
+                "Este análisis utiliza un modelo cuadrático hipotético, no mediciones instrumentales. "
+                "No hay todavía una puntuación de calidad de datos reales ni un ajuste experimental. "
+                "El modelo no incorpora por sí mismo sombras, nubosidad, temperatura, orientación ni pérdidas "
+                "de conversión; por ello, sus resultados son estimaciones académicas."
+            )
+            source_label = "Conclusiones calculadas dinámicamente a partir del modelo hipotético y de los parámetros seleccionados."
+        else:
+            reliability = (
+                "This analysis uses a hypothetical quadratic model, not instrument measurements. "
+                "No real-data quality score or experimental fit is available yet. "
+                "The model does not itself account for shading, cloud cover, temperature, orientation "
+                "or conversion losses; its results are therefore academic estimates."
+            )
+            source_label = "Conclusions dynamically calculated from the hypothetical model and selected parameters."
+        conclusions.append((
+            "Confiabilidad y limitaciones" if language == "es" else "Reliability and limitations",
+            reliability,
+        ))
+
+    return source_label, conclusions
+
+
 # ------------------------------ OVERVIEW ------------------------------
 if page == T["nav"][0]:
     st.markdown(
@@ -744,26 +915,12 @@ if page == T["nav"][0]:
         f'<div class="sl-section-title">🏅 {("Conclusiones analíticas" if lang == "es" else "Analytical conclusions")}</div>',
         unsafe_allow_html=True,
     )
-    if lang == "es":
-        conclusions = [
-            ("Comportamiento de la potencia",
-             f"La potencia alcanza su máximo de {peak_total:,.1f} W al mediodía. El modelo describe una curva simétrica en el intervalo seleccionado."),
-            ("Energía generada",
-             f"La energía estimada es {energy_wh:,.2f} Wh ({energy_kwh:,.4f} kWh), obtenida mediante la integral definida."),
-            ("Confiabilidad y limitaciones",
-             f"Las mediciones cargadas tienen un indicador de calidad de {quality_value}." if quality_now else
-             "El resultado corresponde a un modelo hipotético. Carga un CSV para evaluar la calidad de mediciones reales."),
-        ]
-    else:
-        conclusions = [
-            ("Power behaviour",
-             f"Power reaches its {peak_total:,.1f} W peak at noon. The model describes a symmetric curve over the selected interval."),
-            ("Energy generated",
-             f"Estimated energy is {energy_wh:,.2f} Wh ({energy_kwh:,.4f} kWh), calculated using the definite integral."),
-            ("Reliability and limitations",
-             f"Uploaded measurements have an indicative quality score of {quality_value}." if quality_now else
-             "This result comes from a hypothetical model. Upload a CSV to assess real measurement quality."),
-        ]
+    dashboard_source, conclusions = build_dynamic_conclusions(
+        lang, start, end, pmax, panels,
+        energy_wh, numeric_wh, average_power,
+        st.session_state.measurements,
+        st.session_state.measurement_quality,
+    )
     conclusion_cols = st.columns(3, gap="medium")
     for col, (title, description), number in zip(conclusion_cols, conclusions, ["1", "2", "3"]):
         with col:
@@ -1022,132 +1179,19 @@ elif page == T["nav"][5]:
         [T["difference"], f"{abs(energy_wh-numeric_wh):.6f} Wh"],
     ]
 
-    # Build report conclusions from the active analysis source without changing the app flow.
     report_measurements = st.session_state.measurements
     report_quality = st.session_state.measurement_quality
-    report_conclusions = []
-
-    if report_measurements is not None and report_quality is not None and len(report_measurements) >= 2:
-        measured_data = report_measurements.copy()
-        measured_power = pd.to_numeric(measured_data["potencia_w"], errors="coerce").dropna()
-        measured_hours = pd.to_numeric(measured_data.loc[measured_power.index, "hora"], errors="coerce")
-        measured_peak_index = measured_power.idxmax()
-        measured_peak_power = float(measured_power.loc[measured_peak_index])
-        measured_peak_hour = float(measured_hours.loc[measured_peak_index])
-        total_minutes = int(round(measured_peak_hour * 60))
-        peak_hour_label = f"{total_minutes // 60:02d}:{total_minutes % 60:02d}"
-        measured_energy_wh = float(report_quality["energy"])
-        measured_count = int(len(measured_data))
-        measured_start = float(measured_data["hora"].min())
-        measured_end = float(measured_data["hora"].max())
-
-        measured_r2_text = ""
-        if measured_count >= 3:
-            measured_x = measured_data["hora"].to_numpy(dtype=float)
-            measured_y = measured_data["potencia_w"].to_numpy(dtype=float)
-            fit_coefficients = np.polyfit(measured_x, measured_y, 2)
-            fit_predictions = np.polyval(fit_coefficients, measured_x)
-            residual_sum = float(np.sum((measured_y - fit_predictions) ** 2))
-            total_sum = float(np.sum((measured_y - measured_y.mean()) ** 2))
-            measured_r2 = 1 - residual_sum / total_sum if total_sum else 1.0
-            measured_r2_text = (
-                f" El ajuste cuadrático obtuvo R² = {measured_r2:.4f}."
-                if lang == "es" else
-                f" The quadratic fit achieved R² = {measured_r2:.4f}."
-            )
-
-        if lang == "es":
-            report_conclusions = [
-                (
-                    "Comportamiento de la potencia",
-                    f"Las mediciones registran una potencia máxima de {measured_peak_power:,.2f} W a las {peak_hour_label}. "
-                    f"Se analizaron {measured_count} registros válidos entre las {measured_start:g}:00 y las {measured_end:g}:00."
-                ),
-                (
-                    "Energía generada",
-                    f"La energía acumulada a partir de las mediciones es {measured_energy_wh:,.3f} Wh, "
-                    "calculada mediante integración numérica con la regla del trapecio. "
-                    f"Como referencia, el modelo configurado estima {energy_wh:,.3f} Wh en el intervalo seleccionado."
-                ),
-                (
-                    "Confiabilidad y limitaciones",
-                    f"El indicador orientativo de calidad es {report_quality['score']:.0f}/100. "
-                    f"Se identificaron {report_quality['incomplete']} filas incompletas, {report_quality['duplicates']} horas duplicadas, "
-                    f"{report_quality['negative']} potencias negativas y {report_quality['outliers']} posibles valores atípicos."
-                    + measured_r2_text
-                    + " Este indicador orienta la revisión de los datos, pero no sustituye la calibración de los instrumentos."
-                ),
-            ]
-            report_source_label = "Conclusiones generadas a partir de mediciones reales (CSV), contrastadas con el modelo configurado."
-        else:
-            report_conclusions = [
-                (
-                    "Power behaviour",
-                    f"Measurements record a peak power of {measured_peak_power:,.2f} W at {peak_hour_label}. "
-                    f"{measured_count} valid records were analysed between {measured_start:g}:00 and {measured_end:g}:00."
-                ),
-                (
-                    "Energy generated",
-                    f"Accumulated energy from the measurements is {measured_energy_wh:,.3f} Wh, "
-                    "calculated numerically using the trapezoidal rule. "
-                    f"For reference, the configured model estimates {energy_wh:,.3f} Wh over its selected interval."
-                ),
-                (
-                    "Reliability and limitations",
-                    f"The indicative data-quality score is {report_quality['score']:.0f}/100. "
-                    f"The review found {report_quality['incomplete']} incomplete rows, {report_quality['duplicates']} duplicate times, "
-                    f"{report_quality['negative']} negative power values and {report_quality['outliers']} potential outliers."
-                    + measured_r2_text
-                    + " This score supports data review but does not replace instrument calibration."
-                ),
-            ]
-            report_source_label = "Conclusions generated from real CSV measurements and contrasted with the configured model."
+    report_source_label, report_conclusions = build_dynamic_conclusions(
+        lang, start, end, pmax, panels,
+        energy_wh, numeric_wh, average_power,
+        report_measurements, report_quality,
+    )
+    if report_measurements is not None and report_quality is not None:
         report_rows.extend([
-            ["Registros medidos" if lang == "es" else "Measured records", str(measured_count)],
-            ["Energía medida" if lang == "es" else "Measured energy", f"{measured_energy_wh:,.3f} Wh"],
-            ["Calidad de datos" if lang == "es" else "Data quality", f"{report_quality['score']:.0f}/100"],
+            ["Registros medidos" if lang == "es" else "Measured records", str(len(report_measurements))],
+            ["Energía medida" if lang == "es" else "Measured energy", f"{float(report_quality['energy']):,.3f} Wh"],
+            ["Calidad de datos" if lang == "es" else "Data quality", f"{float(report_quality['score']):.0f}/100"],
         ])
-    else:
-        if lang == "es":
-            report_conclusions = [
-                (
-                    "Comportamiento de la potencia",
-                    f"El modelo cuadrático alcanza una potencia máxima de {peak_total:,.2f} W a las 12:00. "
-                    f"La curva es simétrica respecto al mediodía dentro del intervalo configurado ({start:g}:00–{end:g}:00)."
-                ),
-                (
-                    "Energía generada",
-                    f"La integral definida estima {energy_wh:,.3f} Wh ({energy_wh / 1000:,.4f} kWh) de energía en el intervalo. "
-                    f"La regla del trapecio obtiene {numeric_wh:,.3f} Wh, con una diferencia absoluta de {abs(energy_wh-numeric_wh):.6f} Wh."
-                ),
-                (
-                    "Confiabilidad y limitaciones",
-                    "El resultado procede de un modelo hipotético y no de mediciones instrumentales. "
-                    "Por tanto, todavía no existe una puntuación de calidad de datos reales. "
-                    "Los resultados dependen de los parámetros configurados y no deben interpretarse como producción observada."
-                ),
-            ]
-            report_source_label = "Conclusiones generadas a partir del modelo hipotético; no se han cargado mediciones reales."
-        else:
-            report_conclusions = [
-                (
-                    "Power behaviour",
-                    f"The quadratic model reaches a peak power of {peak_total:,.2f} W at 12:00. "
-                    f"The curve is symmetric around noon within the configured interval ({start:g}:00–{end:g}:00)."
-                ),
-                (
-                    "Energy generated",
-                    f"Definite integration estimates {energy_wh:,.3f} Wh ({energy_wh / 1000:,.4f} kWh) over the interval. "
-                    f"The trapezoidal rule gives {numeric_wh:,.3f} Wh, with an absolute difference of {abs(energy_wh-numeric_wh):.6f} Wh."
-                ),
-                (
-                    "Reliability and limitations",
-                    "This result comes from a hypothetical model, not instrument measurements. "
-                    "Therefore, no real-data quality score is available yet. "
-                    "Results depend on the configured parameters and must not be interpreted as observed production."
-                ),
-            ]
-            report_source_label = "Conclusions generated from the hypothetical model; no real measurements have been uploaded."
     report_buffer = io.BytesIO()
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(name="SolarTitle", parent=styles["Title"], textColor=colors.HexColor("#1769AA"), fontSize=20, leading=24))
