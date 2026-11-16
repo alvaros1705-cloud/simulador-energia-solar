@@ -419,50 +419,55 @@ st.markdown(f"""<style>
 @media(max-width:850px) {{ .sl-hero {{ min-height:210px; padding:1.4rem; background-position:62% center; }} .sl-hero h1 {{ font-size:1.65rem; }} }}
 </style>""", unsafe_allow_html=True)
 
-# Header institucional: conserva los archivos gráficos originales del proyecto.
+# Institutional identity and real button navigation.
 logo_uni = ASSETS / "logo_universidad_simon_bolivar.png"
 logo_program = ASSETS / ("logo_ingenieria_multimedia_oscuro.png" if dark else "logo_ingenieria_multimedia_claro.png")
-brand_cols = st.columns([1.1, 5.5, 1.2])
-with brand_cols[0]:
-    if logo_uni.exists():
-        st.image(str(logo_uni), width=112)
-with brand_cols[1]:
+
+main_header, lang_es_col, lang_en_col, light_col, dark_col = st.columns([4.6, 1.15, 1.15, 1.0, 1.0], gap="small")
+with main_header:
     st.markdown(
-        f"""
-        <div class="brandbar">
-          <div class="brand-copy">
-            <div class="eyebrow">{T["course"]}</div>
-            <h1 class="brand-title">☀️ Solar Lab – Integral Insights</h1>
-            <div class="brand-subtitle">{T["subtitle"]}</div>
-            <span class="brand-tag">INTEGRAL CALCULUS · SOLAR ENERGY</span>
-          </div>
-        </div>
-        """,
+        '<div class="sl-topbar"><span style="font-size:2rem">☀️</span><div><h2>Solar Lab – Integral Insights</h2><small>UNIVERSIDAD SIMÓN BOLÍVAR · INGENIERÍA MULTIMEDIA</small></div></div>',
         unsafe_allow_html=True,
     )
-with brand_cols[2]:
-    if logo_program.exists():
-        st.image(str(logo_program), width=92)
-
-# Navegación principal en una sola banda; los parámetros quedan en el panel lateral.
-page = st.radio(
-    "Secciones",
-    T["nav"],
-    horizontal=True,
-    label_visibility="collapsed",
-)
+with lang_es_col:
+    st.button("🇨🇴 Español", key="lang_es_btn", type="primary" if lang == "es" else "secondary",
+              use_container_width=True, on_click=set_language, args=("Español (Colombia)",))
+with lang_en_col:
+    st.button("🇺🇸 English", key="lang_en_btn", type="primary" if lang == "en" else "secondary",
+              use_container_width=True, on_click=set_language, args=("English (USA)",))
+with light_col:
+    st.button("☀️ Claro", key="theme_light_btn", type="primary" if not dark else "secondary",
+              use_container_width=True, on_click=set_theme, args=(False,))
+with dark_col:
+    st.button("🌙 Oscuro", key="theme_dark_btn", type="primary" if dark else "secondary",
+              use_container_width=True, on_click=set_theme, args=(True,))
 
 with st.sidebar:
-    st.markdown("### ☀️ " + T["model"])
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+    if logo_uni.exists():
+        st.image(str(logo_uni), width=185)
+    if logo_program.exists():
+        st.image(str(logo_program), width=105)
+    st.markdown("### " + ("Solar Lab" if lang == "en" else "Laboratorio Solar"))
     st.caption(T["institution"])
-    panels = st.number_input(T["panels"], min_value=1, max_value=100, value=1, step=1)
-    pmax = st.slider(T["peak"] + " (W)", min_value=50, max_value=600, value=300, step=10)
-    start = st.slider(T["start"], min_value=6.0, max_value=12.0, value=6.0, step=0.5)
-    end = st.slider(T["end"], min_value=12.0, max_value=18.0, value=18.0, step=0.5)
+    st.divider()
+    nav_icons = ["⌂", "▤", "∫", "⚗", "◷", "▧"]
+    for idx, label in enumerate(T["nav"]):
+        active = st.session_state.page_index == idx
+        st.button(
+            f"{nav_icons[idx]}   {label}",
+            key=f"nav_page_{idx}",
+            type="primary" if active else "secondary",
+            use_container_width=True,
+            on_click=set_page,
+            args=(idx,),
+        )
     st.divider()
     st.markdown("**" + T["team"] + "**")
     for member in TEAM:
         st.caption("· " + member)
+
+page = T["nav"][st.session_state.page_index]
 
 if end <= start:
     st.error("El intervalo final debe ser mayor que el inicial.")
