@@ -357,6 +357,8 @@ st.markdown(
     }}
     </style>
     """,
+    unsafe_allow_html=True,
+)
 
 st.markdown(f"""<style>
 /* Solar Lab reference layout */
