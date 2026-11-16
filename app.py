@@ -1016,6 +1016,133 @@ elif page == T["nav"][5]:
         [T["numeric"], f"{numeric_wh:.4f} Wh"],
         [T["difference"], f"{abs(energy_wh-numeric_wh):.6f} Wh"],
     ]
+
+    # Build report conclusions from the active analysis source without changing the app flow.
+    report_measurements = st.session_state.measurements
+    report_quality = st.session_state.measurement_quality
+    report_conclusions = []
+
+    if report_measurements is not None and report_quality is not None and len(report_measurements) >= 2:
+        measured_data = report_measurements.copy()
+        measured_power = pd.to_numeric(measured_data["potencia_w"], errors="coerce").dropna()
+        measured_hours = pd.to_numeric(measured_data.loc[measured_power.index, "hora"], errors="coerce")
+        measured_peak_index = measured_power.idxmax()
+        measured_peak_power = float(measured_power.loc[measured_peak_index])
+        measured_peak_hour = float(measured_hours.loc[measured_peak_index])
+        total_minutes = int(round(measured_peak_hour * 60))
+        peak_hour_label = f"{total_minutes // 60:02d}:{total_minutes % 60:02d}"
+        measured_energy_wh = float(report_quality["energy"])
+        measured_count = int(len(measured_data))
+        measured_start = float(measured_data["hora"].min())
+        measured_end = float(measured_data["hora"].max())
+
+        measured_r2_text = ""
+        if measured_count >= 3:
+            measured_x = measured_data["hora"].to_numpy(dtype=float)
+            measured_y = measured_data["potencia_w"].to_numpy(dtype=float)
+            fit_coefficients = np.polyfit(measured_x, measured_y, 2)
+            fit_predictions = np.polyval(fit_coefficients, measured_x)
+            residual_sum = float(np.sum((measured_y - fit_predictions) ** 2))
+            total_sum = float(np.sum((measured_y - measured_y.mean()) ** 2))
+            measured_r2 = 1 - residual_sum / total_sum if total_sum else 1.0
+            measured_r2_text = (
+                f" El ajuste cuadrático obtuvo R² = {measured_r2:.4f}."
+                if lang == "es" else
+                f" The quadratic fit achieved R² = {measured_r2:.4f}."
+            )
+
+        if lang == "es":
+            report_conclusions = [
+                (
+                    "Comportamiento de la potencia",
+                    f"Las mediciones registran una potencia máxima de {measured_peak_power:,.2f} W a las {peak_hour_label}. "
+                    f"Se analizaron {measured_count} registros válidos entre las {measured_start:g}:00 y las {measured_end:g}:00."
+                ),
+                (
+                    "Energía generada",
+                    f"La energía acumulada a partir de las mediciones es {measured_energy_wh:,.3f} Wh, "
+                    "calculada mediante integración numérica con la regla del trapecio. "
+                    f"Como referencia, el modelo configurado estima {energy_wh:,.3f} Wh en el intervalo seleccionado."
+                ),
+                (
+                    "Confiabilidad y limitaciones",
+                    f"El indicador orientativo de calidad es {report_quality['score']:.0f}/100. "
+                    f"Se identificaron {report_quality['incomplete']} filas incompletas, {report_quality['duplicates']} horas duplicadas, "
+                    f"{report_quality['negative']} potencias negativas y {report_quality['outliers']} posibles valores atípicos."
+                    + measured_r2_text
+                    + " Este indicador orienta la revisión de los datos, pero no sustituye la calibración de los instrumentos."
+                ),
+            ]
+            report_source_label = "Conclusiones generadas a partir de mediciones reales (CSV), contrastadas con el modelo configurado."
+        else:
+            report_conclusions = [
+                (
+                    "Power behaviour",
+                    f"Measurements record a peak power of {measured_peak_power:,.2f} W at {peak_hour_label}. "
+                    f"{measured_count} valid records were analysed between {measured_start:g}:00 and {measured_end:g}:00."
+                ),
+                (
+                    "Energy generated",
+                    f"Accumulated energy from the measurements is {measured_energy_wh:,.3f} Wh, "
+                    "calculated numerically using the trapezoidal rule. "
+                    f"For reference, the configured model estimates {energy_wh:,.3f} Wh over its selected interval."
+                ),
+                (
+                    "Reliability and limitations",
+                    f"The indicative data-quality score is {report_quality['score']:.0f}/100. "
+                    f"The review found {report_quality['incomplete']} incomplete rows, {report_quality['duplicates']} duplicate times, "
+                    f"{report_quality['negative']} negative power values and {report_quality['outliers']} potential outliers."
+                    + measured_r2_text
+                    + " This score supports data review but does not replace instrument calibration."
+                ),
+            ]
+            report_source_label = "Conclusions generated from real CSV measurements and contrasted with the configured model."
+        report_rows.extend([
+            ["Registros medidos" if lang == "es" else "Measured records", str(measured_count)],
+            ["Energía medida" if lang == "es" else "Measured energy", f"{measured_energy_wh:,.3f} Wh"],
+            ["Calidad de datos" if lang == "es" else "Data quality", f"{report_quality['score']:.0f}/100"],
+        ])
+    else:
+        if lang == "es":
+            report_conclusions = [
+                (
+                    "Comportamiento de la potencia",
+                    f"El modelo cuadrático alcanza una potencia máxima de {peak_total:,.2f} W a las 12:00. "
+                    f"La curva es simétrica respecto al mediodía dentro del intervalo configurado ({start:g}:00–{end:g}:00)."
+                ),
+                (
+                    "Energía generada",
+                    f"La integral definida estima {energy_wh:,.3f} Wh ({energy_wh / 1000:,.4f} kWh) de energía en el intervalo. "
+                    f"La regla del trapecio obtiene {numeric_wh:,.3f} Wh, con una diferencia absoluta de {abs(energy_wh-numeric_wh):.6f} Wh."
+                ),
+                (
+                    "Confiabilidad y limitaciones",
+                    "El resultado procede de un modelo hipotético y no de mediciones instrumentales. "
+                    "Por tanto, todavía no existe una puntuación de calidad de datos reales. "
+                    "Los resultados dependen de los parámetros configurados y no deben interpretarse como producción observada."
+                ),
+            ]
+            report_source_label = "Conclusiones generadas a partir del modelo hipotético; no se han cargado mediciones reales."
+        else:
+            report_conclusions = [
+                (
+                    "Power behaviour",
+                    f"The quadratic model reaches a peak power of {peak_total:,.2f} W at 12:00. "
+                    f"The curve is symmetric around noon within the configured interval ({start:g}:00–{end:g}:00)."
+                ),
+                (
+                    "Energy generated",
+                    f"Definite integration estimates {energy_wh:,.3f} Wh ({energy_wh / 1000:,.4f} kWh) over the interval. "
+                    f"The trapezoidal rule gives {numeric_wh:,.3f} Wh, with an absolute difference of {abs(energy_wh-numeric_wh):.6f} Wh."
+                ),
+                (
+                    "Reliability and limitations",
+                    "This result comes from a hypothetical model, not instrument measurements. "
+                    "Therefore, no real-data quality score is available yet. "
+                    "Results depend on the configured parameters and must not be interpreted as observed production."
+                ),
+            ]
+            report_source_label = "Conclusions generated from the hypothetical model; no real measurements have been uploaded."
     report_buffer = io.BytesIO()
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(name="SolarTitle", parent=styles["Title"], textColor=colors.HexColor("#1769AA"), fontSize=20, leading=24))
@@ -1042,9 +1169,16 @@ elif page == T["nav"][5]:
     ]))
     story += [
         report_table, Spacer(1, 14),
-        Paragraph("Conclusión" if lang == "es" else "Conclusion", styles["Heading2"]),
-        Paragraph(T["integral_desc"], styles["BodyText"]),
-        Spacer(1, 8),
+        Paragraph("Conclusiones analíticas" if lang == "es" else "Analytical conclusions", styles["Heading2"]),
+        Paragraph(report_source_label, styles["BodyText"]),
+        Spacer(1, 7),
+    ]
+    for conclusion_title, conclusion_text in report_conclusions:
+        story.append(Paragraph("<b>" + conclusion_title + "</b>", styles["Heading3"]))
+        story.append(Paragraph(conclusion_text, styles["BodyText"]))
+        story.append(Spacer(1, 7))
+    story += [
+        Spacer(1, 4),
         Paragraph(T["caution"], styles["BodyText"]),
     ]
     SimpleDocTemplate(report_buffer, pagesize=A4, rightMargin=1.7*cm, leftMargin=1.7*cm, topMargin=1.5*cm, bottomMargin=1.5*cm).build(story)
@@ -1058,9 +1192,13 @@ elif page == T["nav"][5]:
     })
     csv_bytes = export.to_csv(index=False).encode("utf-8-sig")
     package = io.BytesIO()
+    conclusions_text = "\n\n".join(
+        title + "\n" + text for title, text in report_conclusions
+    )
     with zipfile.ZipFile(package, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.writestr("informe_solar_lab.pdf", pdf_bytes)
         archive.writestr("datos_solar_lab.csv", csv_bytes)
+        archive.writestr("conclusiones_analiticas.txt", report_source_label + "\n\n" + conclusions_text)
         archive.writestr("README.txt", T["institution"] + "\n" + "Solar Lab – Integral Insights")
     dl1, dl2, dl3 = st.columns(3)
     with dl1:
