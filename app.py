@@ -987,23 +987,6 @@ if page == T["nav"][0]:
             "🖼️  " + ("Descargar gráfica" if lang == "es" else "Download chart"),
             chart_png.getvalue(), "solar_lab_curva.png", "image/png", use_container_width=True,
         )
-    feature_cols = st.columns(5, gap="small")
-    feature_actions = [
-        ("∫  Integración analítica", 2),
-        ("⌁  Ajuste de curvas", 1),
-        ("⚗  Hipótesis", 3),
-        ("◉  Geometría", 2),
-        ("◷  Historial", 4),
-    ]
-    for col, (label, target_page) in zip(feature_cols, feature_actions):
-        with col:
-            st.button(
-                label,
-                key=f"dashboard_shortcut_{target_page}_{label}",
-                use_container_width=True,
-                on_click=set_page,
-                args=(target_page,),
-            )
     # El pie institucional global se muestra una sola vez al final de la aplicación.
 
 # ------------------------------ MEASUREMENTS ------------------------------
