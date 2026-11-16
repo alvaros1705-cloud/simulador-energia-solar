@@ -495,10 +495,10 @@ with main_header:
         if logo_program.exists():
             st.image(str(logo_program), width=76)
 with lang_es_col:
-    st.button("🇨🇴 Español", key="lang_es_btn", type="primary" if lang == "es" else "secondary",
+    st.button("Español", key="lang_es_btn", type="primary" if lang == "es" else "secondary",
               use_container_width=True, on_click=set_language, args=("Español (Colombia)",))
 with lang_en_col:
-    st.button("🇺🇸 English", key="lang_en_btn", type="primary" if lang == "en" else "secondary",
+    st.button("English (USA)", key="lang_en_btn", type="primary" if lang == "en" else "secondary",
               use_container_width=True, on_click=set_language, args=("English (USA)",))
 with light_col:
     st.button("☀️ Claro", key="theme_light_btn", type="primary" if not dark else "secondary",
