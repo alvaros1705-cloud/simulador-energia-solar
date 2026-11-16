@@ -419,18 +419,72 @@ st.markdown(f"""<style>
 @keyframes sl-rise {{ from {{ opacity:0; transform:translateY(12px); }} to {{ opacity:1; transform:translateY(0); }} }}
 @keyframes sl-sun {{ from {{ transform:translateY(2px) scale(.92); opacity:.45; }} to {{ transform:translateY(-10px) scale(1.12); opacity:.9; }} }}
 @media(max-width:850px) {{ .sl-hero {{ min-height:210px; padding:1.4rem; background-position:62% center; }} .sl-hero h1 {{ font-size:1.65rem; }} }}
+
+/* High-contrast theme-aware buttons: never inherit low-contrast defaults. */
+.stApp div[data-testid="stButton"] > button,
+.stApp div[data-testid="stDownloadButton"] > button,
+.stApp button[data-testid="stBaseButton-secondary"] {{
+  background:var(--sl-surface2) !important;
+  color:var(--sl-text) !important;
+  -webkit-text-fill-color:var(--sl-text) !important;
+  border:1px solid var(--sl-line) !important;
+  font-weight:750 !important;
+  opacity:1 !important;
+}}
+.stApp button[data-testid="stBaseButton-secondary"] *,
+.stApp button[data-testid="stBaseButton-primary"] *,
+.stApp div[data-testid="stButton"] > button *,
+.stApp div[data-testid="stDownloadButton"] > button * {{
+  color:inherit !important;
+  -webkit-text-fill-color:inherit !important;
+  opacity:1 !important;
+}}
+.stApp button[data-testid="stBaseButton-primary"],
+.stApp div[data-testid="stButton"] > button[kind="primary"],
+.stApp div[data-testid="stDownloadButton"] > button[kind="primary"] {{
+  background:{"#3478D4" if dark else "#1769AA"} !important;
+  color:#FFFFFF !important;
+  -webkit-text-fill-color:#FFFFFF !important;
+  border:1px solid {"#3478D4" if dark else "#1769AA"} !important;
+  font-weight:800 !important;
+}}
+.stApp button[data-testid="stBaseButton-primary"]:hover,
+.stApp button[data-testid="stBaseButton-secondary"]:hover {{
+  filter:brightness(1.06);
+}}
+/* Keep the banner title white on both themes, above the photographic overlay. */
+html body .stApp .sl-hero .sl-hero-content h1 {{
+  color:#FFFFFF !important;
+  -webkit-text-fill-color:#FFFFFF !important;
+  text-shadow:0 2px 10px rgba(0,0,0,.35) !important;
+}}
+html body .stApp .sl-hero .sl-hero-content p {{
+  color:#FFFFFF !important;
+  -webkit-text-fill-color:#FFFFFF !important;
+  text-shadow:0 1px 5px rgba(0,0,0,.3) !important;
+}}
+/* Institutional marks share one aligned header row. */
+.sl-topbar h2 {{ font-size:1.55rem !important; line-height:1.15; }}
+[data-testid="stSidebar"] button[data-testid="stBaseButton-secondary"] {{
+  background:var(--sl-surface) !important;
+}}
+[data-testid="stSidebar"] button[data-testid="stBaseButton-primary"] {{
+  background:{"#3478D4" if dark else "#1769AA"} !important;
+  color:#FFFFFF !important;
+  -webkit-text-fill-color:#FFFFFF !important;
+}}
 </style>""", unsafe_allow_html=True)
 
 # Main institutional header: university identity is prominent in the content frame.
 logo_uni = ASSETS / "logo_universidad_simon_bolivar.png"
 logo_program = ASSETS / ("logo_ingenieria_multimedia_oscuro.png" if dark else "logo_ingenieria_multimedia_claro.png")
 
-main_header, lang_es_col, lang_en_col, light_col, dark_col = st.columns([5.0, 1.12, 1.12, 1.0, 1.0], gap="small")
+main_header, lang_es_col, lang_en_col, light_col, dark_col = st.columns([5.8, 1.0, 1.0, 1.0, 1.0], gap="small")
 with main_header:
-    uni_col, title_col, program_col = st.columns([1.35, 5.2, 0.9], vertical_alignment="center")
+    uni_col, title_col, program_col = st.columns([2.0, 4.6, 0.7], vertical_alignment="center")
     with uni_col:
         if logo_uni.exists():
-            st.image(str(logo_uni), width=142)
+            st.image(str(logo_uni), width=190)
     with title_col:
         st.markdown(
             '<div class="sl-topbar"><div><h2>Solar Lab – Integral Insights</h2>'
