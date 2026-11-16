@@ -357,8 +357,67 @@ st.markdown(
     }}
     </style>
     """,
-    unsafe_allow_html=True,
-)
+
+st.markdown(f"""<style>
+/* Solar Lab reference layout */
+[data-testid="stSidebar"] > div:first-child {{ background:var(--sl-surface2) !important; }}
+[data-testid="stSidebar"] {{ min-width:250px; }}
+[data-testid="stSidebar"] button {{
+  width:100%; min-height:2.8rem; text-align:left; border-radius:12px !important;
+  border:1px solid transparent !important; font-weight:700 !important;
+  transition:background .2s ease, transform .2s ease, box-shadow .2s ease !important;
+}}
+[data-testid="stSidebar"] button:hover {{
+  transform:translateX(3px); background:var(--sl-surface) !important;
+  border-color:var(--sl-line) !important;
+}}
+.sl-topbar {{ display:flex; align-items:center; gap:.6rem; min-height:3rem; padding:.2rem 0 .8rem 0; }}
+.sl-topbar h2 {{ color:var(--sl-text) !important; font-size:1.3rem; margin:0; font-weight:850; }}
+.sl-topbar small {{ color:var(--sl-muted) !important; letter-spacing:.08em; font-size:.7rem; }}
+.sl-hero {{
+  position:relative; overflow:hidden; min-height:190px; padding:2rem 2.2rem;
+  border-radius:20px; margin:.3rem 0 1.25rem 0;
+  background-image:linear-gradient(90deg,rgba(8,28,53,.92) 0%,rgba(8,35,62,.78) 42%,rgba(8,35,62,.1) 100%),
+  url("https://images.unsplash.com/photo-1768839727824-28d6f0dcd1d1?auto=format&fit=crop&fm=jpg&q=82&w=1800");
+  background-size:cover; background-position:center 52%;
+  box-shadow:0 12px 32px rgba(12,35,65,.15);
+  animation:sl-enter .7s ease both;
+}}
+.sl-hero:after {{
+  content:""; position:absolute; width:170px; height:170px; right:8%; top:10%;
+  border-radius:50%; background:rgba(255,220,110,.18); filter:blur(16px);
+  animation:sl-sun 5s ease-in-out infinite alternate;
+}}
+.sl-hero-content {{ position:relative; z-index:1; max-width:650px; }}
+.sl-hero h1 {{ color:white !important; font-size:clamp(1.8rem,3vw,2.55rem); line-height:1.08; font-weight:850; margin:0 0 .55rem 0; }}
+.sl-hero p {{ color:rgba(255,255,255,.93) !important; max-width:610px; font-size:1rem; line-height:1.55; margin:0; }}
+.sl-eyebrow {{ color:#B9E5FF !important; font-size:.73rem; font-weight:800; letter-spacing:.15em; margin-bottom:.65rem; }}
+[data-testid="stMetric"] {{
+  background:var(--sl-surface) !important; border:1px solid var(--sl-line) !important;
+  border-radius:16px !important; padding:1rem 1.1rem !important;
+  box-shadow:0 5px 16px rgba(18,48,78,.055) !important;
+  animation:sl-rise .55s ease both; transition:transform .22s ease, box-shadow .22s ease !important;
+}}
+[data-testid="stMetric"]:hover {{ transform:translateY(-3px); box-shadow:0 10px 24px rgba(18,48,78,.10) !important; }}
+[data-testid="stMetricLabel"], [data-testid="stMetricValue"], [data-testid="stMetricDelta"] {{ color:var(--sl-text) !important; }}
+[data-testid="stMetricValue"] {{ font-weight:850 !important; }}
+.sl-section-title {{ color:var(--sl-text) !important; font-size:1.3rem; font-weight:850; margin:.2rem 0 .25rem 0; }}
+.sl-section-sub {{ color:var(--sl-muted) !important; font-size:.9rem; margin:0 0 .9rem 0; }}
+.sl-panel {{ background:var(--sl-surface); border:1px solid var(--sl-line); border-radius:17px; padding:1rem 1.1rem; box-shadow:0 5px 18px rgba(18,48,78,.045); height:100%; animation:sl-rise .6s ease both; }}
+.sl-panel h3 {{ color:var(--sl-text) !important; font-size:1.02rem; margin:0 0 .7rem 0; font-weight:800; }}
+.sl-conclusion {{ background:var(--sl-surface); border:1px solid var(--sl-line); border-radius:15px; padding:1rem; min-height:118px; box-shadow:0 4px 14px rgba(18,48,78,.04); animation:sl-rise .7s ease both; }}
+.sl-conclusion strong {{ color:var(--sl-text) !important; display:block; margin-bottom:.35rem; }}
+.sl-conclusion p {{ color:var(--sl-muted) !important; font-size:.88rem; margin:0; line-height:1.45; }}
+.sl-index {{ display:inline-flex; width:28px; height:28px; border-radius:50%; align-items:center; justify-content:center; margin-right:.35rem; color:white !important; font-weight:800; background:#2678DC; }}
+.sl-feature {{ border:1px solid var(--sl-line); background:var(--sl-surface); padding:.75rem .5rem; border-radius:13px; text-align:center; color:var(--sl-text) !important; font-size:.8rem; font-weight:700; }}
+.stButton button, .stDownloadButton button {{ min-height:2.7rem; border-radius:12px !important; font-weight:750 !important; transition:transform .2s ease, box-shadow .2s ease !important; }}
+.stButton button:hover, .stDownloadButton button:hover {{ transform:translateY(-2px); box-shadow:0 7px 16px rgba(18,48,78,.12) !important; }}
+.sl-footer {{ color:var(--sl-muted) !important; text-align:center; padding:1.2rem 0 .5rem 0; font-size:.78rem; }}
+@keyframes sl-enter {{ from {{ opacity:0; transform:translateY(10px); }} to {{ opacity:1; transform:translateY(0); }} }}
+@keyframes sl-rise {{ from {{ opacity:0; transform:translateY(12px); }} to {{ opacity:1; transform:translateY(0); }} }}
+@keyframes sl-sun {{ from {{ transform:translateY(2px) scale(.92); opacity:.45; }} to {{ transform:translateY(-10px) scale(1.12); opacity:.9; }} }}
+@media(max-width:850px) {{ .sl-hero {{ min-height:210px; padding:1.4rem; background-position:62% center; }} .sl-hero h1 {{ font-size:1.65rem; }} }}
+</style>""", unsafe_allow_html=True)
 
 # Header institucional: conserva los archivos gráficos originales del proyecto.
 logo_uni = ASSETS / "logo_universidad_simon_bolivar.png"
