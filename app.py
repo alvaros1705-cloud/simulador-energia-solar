@@ -532,37 +532,122 @@ average_power = energy_wh / (end - start)
 
 # ------------------------------ OVERVIEW ------------------------------
 if page == T["nav"][0]:
-    st.markdown(f'<p class="section-desc">{T["intro"]}</p>', unsafe_allow_html=True)
-    metric_cols = st.columns(4)
+    st.markdown(
+        f'<div class="sl-hero"><div class="sl-hero-content"><div class="sl-eyebrow">{T["course"]}</div>'
+        f'<h1>Solar Lab – Integral Insights</h1><p>{T["intro"]}</p></div></div>',
+        unsafe_allow_html=True,
+    )
+    quality_now = st.session_state.measurement_quality
+    quality_value = f'{quality_now["score"]:.0f}%' if quality_now else "—"
+    metric_cols = st.columns(4, gap="medium")
     with metric_cols[0]:
         st.metric(T["power"], f"{peak_total:,.0f} W")
     with metric_cols[1]:
-        st.metric(T["energy"], f"{energy_kwh:,.4f} kWh")
+        st.metric(T["energy"], f"{energy_wh:,.1f} Wh")
     with metric_cols[2]:
         st.metric(T["average"], f"{average_power:,.1f} W")
     with metric_cols[3]:
-        st.metric(T["period"], f"{start:g}:00 – {end:g}:00")
+        st.metric("Calidad de datos" if lang == "es" else "Data quality", quality_value,
+                  help="Se calcula después de cargar mediciones reales" if lang == "es" else "Calculated after uploading real measurements")
     st.write("")
-    section_heading("01  /  MODEL", T["curve_title"], T["curve_desc"])
-    fig = make_power_figure(x, y, T["curve_title"])
-    st.pyplot(fig, use_container_width=True)
-    plt.close(fig)
+    left_chart, right_chart = st.columns([1.25, 1], gap="medium")
+    with left_chart:
+        st.markdown(f'<div class="sl-panel"><h3>📈 {T["curve_title"]}</h3><p class="sl-section-sub">{T["curve_desc"]}</p></div>', unsafe_allow_html=True)
+        fig = make_power_figure(x, y, T["curve_title"])
+        st.pyplot(fig, use_container_width=True)
+        plt.close(fig)
+    with right_chart:
+        st.markdown(
+            f'<div class="sl-panel"><h3>📊 {("Energía acumulada" if lang == "es" else "Accumulated energy")}</h3>'
+            f'<p class="sl-section-sub">{("Integral de potencia desde la hora inicial" if lang == "es" else "Integrated power since the start time")}</p></div>',
+            unsafe_allow_html=True,
+        )
+        energy_curve = np.array([analytic_energy(start, float(t), pmax) * panels for t in x])
+        efig, eax = plt.subplots(figsize=(8, 3.8), dpi=150)
+        efig.patch.set_facecolor(C["plot"])
+        eax.set_facecolor(C["plot"])
+        eax.plot(x, energy_curve, color=C["green"], linewidth=3)
+        eax.fill_between(x, energy_curve, color=C["green"], alpha=.15)
+        eax.set_xlabel(T["hour"], color=C["muted"])
+        eax.set_ylabel("Wh", color=C["muted"])
+        eax.tick_params(colors=C["muted"])
+        for spine in eax.spines.values():
+            spine.set_color(C["line"])
+        eax.grid(True, color=C["grid"], alpha=.8)
+        efig.tight_layout()
+        st.pyplot(efig, use_container_width=True)
+        plt.close(efig)
 
-    section_heading("02  /  SCENARIOS", T["scenario"], T["scenario_desc"])
-    scenario_rows = []
-    for factor, label in [(0.8, "−20 %"), (1.0, "Base"), (1.2, "+20 %")]:
-        scenario_rows.append({
-            T["scenario_name"]: label,
-            T["scenario_power"]: pmax * panels * factor,
-            T["scenario_energy"]: analytic_energy(start, end, pmax * factor) * panels / 1000,
-        })
-    scenarios = pd.DataFrame(scenario_rows)
-    st.dataframe(
-        scenarios.style.format({T["scenario_power"]: "{:,.1f}", T["scenario_energy"]: "{:,.4f}"}),
-        use_container_width=True,
-        hide_index=True,
+    st.markdown(
+        f'<div class="sl-section-title">🏅 {("Conclusiones analíticas" if lang == "es" else "Analytical conclusions")}</div>',
+        unsafe_allow_html=True,
     )
-    st.markdown(f'<div class="note-card"><b>{T["note"]}.</b> {T["caution"]}</div>', unsafe_allow_html=True)
+    if lang == "es":
+        conclusions = [
+            ("Comportamiento de la potencia",
+             f"La potencia alcanza su máximo de {peak_total:,.1f} W al mediodía. El modelo describe una curva simétrica en el intervalo seleccionado."),
+            ("Energía generada",
+             f"La energía estimada es {energy_wh:,.2f} Wh ({energy_kwh:,.4f} kWh), obtenida mediante la integral definida."),
+            ("Confiabilidad y limitaciones",
+             f"Las mediciones cargadas tienen un indicador de calidad de {quality_value}." if quality_now else
+             "El resultado corresponde a un modelo hipotético. Carga un CSV para evaluar la calidad de mediciones reales."),
+        ]
+    else:
+        conclusions = [
+            ("Power behaviour",
+             f"Power reaches its {peak_total:,.1f} W peak at noon. The model describes a symmetric curve over the selected interval."),
+            ("Energy generated",
+             f"Estimated energy is {energy_wh:,.2f} Wh ({energy_kwh:,.4f} kWh), calculated using the definite integral."),
+            ("Reliability and limitations",
+             f"Uploaded measurements have an indicative quality score of {quality_value}." if quality_now else
+             "This result comes from a hypothetical model. Upload a CSV to assess real measurement quality."),
+        ]
+    conclusion_cols = st.columns(3, gap="medium")
+    for col, (title, description), number in zip(conclusion_cols, conclusions, ["1", "2", "3"]):
+        with col:
+            st.markdown(
+                f'<div class="sl-conclusion"><strong><span class="sl-index">{number}</span> {title}</strong>'
+                f'<p>{description}</p></div>',
+                unsafe_allow_html=True,
+            )
+
+    st.write("")
+    action_a, action_b, action_c = st.columns([1.35, 1, 1], gap="medium")
+    model_csv = pd.DataFrame({"hora": x, "potencia_w": y, "energia_acumulada_wh": energy_curve})
+    csv_data = model_csv.to_csv(index=False).encode("utf-8-sig")
+    chart_png = io.BytesIO()
+    export_fig = make_power_figure(x, y, T["curve_title"])
+    export_fig.savefig(chart_png, format="png", dpi=180, bbox_inches="tight")
+    plt.close(export_fig)
+    with action_a:
+        st.button(
+            "📑  " + ("Generar informe PDF + CSV" if lang == "es" else "Open PDF + CSV reports"),
+            key="dashboard_report_btn", type="primary", use_container_width=True,
+            on_click=set_page, args=(5,),
+        )
+    with action_b:
+        st.download_button(
+            "📥  " + ("Descargar datos CSV" if lang == "es" else "Download CSV data"),
+            csv_data, "solar_lab_datos.csv", "text/csv", use_container_width=True,
+        )
+    with action_c:
+        st.download_button(
+            "🖼️  " + ("Descargar gráfica" if lang == "es" else "Download chart"),
+            chart_png.getvalue(), "solar_lab_curva.png", "image/png", use_container_width=True,
+        )
+    feature_cols = st.columns(5, gap="small")
+    feature_labels = [
+        "∫  Integración analítica", "⌁  Ajuste de curvas", "⚗  Hipótesis",
+        "◉  Geometría", "◷  Historial",
+    ]
+    for col, label in zip(feature_cols, feature_labels):
+        with col:
+            st.markdown(f'<div class="sl-feature">{label}</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="sl-footer">Solar Lab – Integral Insights · {T["institution"]}<br>'
+        'Foto ilustrativa: Unsplash · Sasun Bughdaryan</div>',
+        unsafe_allow_html=True,
+    )
 
 # ------------------------------ MEASUREMENTS ------------------------------
 elif page == T["nav"][1]:
