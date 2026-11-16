@@ -217,17 +217,17 @@ if "measurements" not in st.session_state:
     st.session_state.measurements = None
 if "measurement_quality" not in st.session_state:
     st.session_state.measurement_quality = None
+if "page_index" not in st.session_state:
+    st.session_state.page_index = 0
 
-top_left, top_right = st.columns([4, 2])
-with top_left:
-    st.session_state.language = st.radio(
-        "Language / Idioma",
-        ["Español (Colombia)", "English (USA)"],
-        horizontal=True,
-        label_visibility="collapsed",
-    )
-with top_right:
-    st.session_state.dark_mode = st.toggle("🌙 Modo oscuro / Dark mode", value=st.session_state.dark_mode)
+def set_language(value):
+    st.session_state.language = value
+
+def set_theme(value):
+    st.session_state.dark_mode = value
+
+def set_page(index):
+    st.session_state.page_index = index
 
 lang = "en" if st.session_state.language == "English (USA)" else "es"
 T = TEXT[lang]
