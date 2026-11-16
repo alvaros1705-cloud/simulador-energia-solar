@@ -473,6 +473,95 @@ html body .stApp .sl-hero .sl-hero-content p {{
   color:#FFFFFF !important;
   -webkit-text-fill-color:#FFFFFF !important;
 }}
+
+/* File uploader: use the selected theme instead of Streamlit's fixed pale dropzone. */
+.stApp [data-testid="stFileUploader"] section,
+.stApp [data-testid="stFileUploaderDropzone"],
+.stApp [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"] {{
+  background:var(--sl-surface2) !important;
+  background-color:var(--sl-surface2) !important;
+  border:1px dashed var(--sl-line) !important;
+  color:var(--sl-text) !important;
+}}
+.stApp [data-testid="stFileUploader"] label,
+.stApp [data-testid="stFileUploader"] p,
+.stApp [data-testid="stFileUploader"] span,
+.stApp [data-testid="stFileUploader"] small,
+.stApp [data-testid="stFileUploader"] div {{
+  color:var(--sl-text) !important;
+  -webkit-text-fill-color:var(--sl-text) !important;
+}}
+.stApp [data-testid="stFileUploader"] button {{
+  background:var(--sl-surface) !important;
+  background-color:var(--sl-surface) !important;
+  color:var(--sl-text) !important;
+  -webkit-text-fill-color:var(--sl-text) !important;
+  border:1px solid var(--sl-line) !important;
+  opacity:1 !important;
+}}
+.stApp [data-testid="stFileUploader"] button * {{
+  color:inherit !important;
+  -webkit-text-fill-color:inherit !important;
+  opacity:1 !important;
+}}
+
+/* Informational messages, including the empty-history message. */
+.stApp [data-testid="stAlert"] {{
+  background:var(--sl-surface2) !important;
+  background-color:var(--sl-surface2) !important;
+  border:1px solid var(--sl-line) !important;
+  color:var(--sl-text) !important;
+  opacity:1 !important;
+}}
+.stApp [data-testid="stAlert"] p,
+.stApp [data-testid="stAlert"] span,
+.stApp [data-testid="stAlert"] div,
+.stApp [data-testid="stAlert"] li {{
+  color:var(--sl-text) !important;
+  -webkit-text-fill-color:var(--sl-text) !important;
+  opacity:1 !important;
+}}
+.stApp [data-testid="stAlert"] svg {{
+  color:var(--sl-blue) !important;
+  fill:var(--sl-blue) !important;
+}}
+
+/* Expanders: themed header and content, especially the mathematical derivation panel. */
+.stApp [data-testid="stExpander"] {{
+  background:var(--sl-surface) !important;
+  background-color:var(--sl-surface) !important;
+  border:1px solid var(--sl-line) !important;
+  border-radius:12px !important;
+  overflow:hidden;
+}}
+.stApp [data-testid="stExpander"] details,
+.stApp [data-testid="stExpander"] summary {{
+  background:var(--sl-surface2) !important;
+  background-color:var(--sl-surface2) !important;
+  color:var(--sl-text) !important;
+  -webkit-text-fill-color:var(--sl-text) !important;
+}}
+.stApp [data-testid="stExpander"] summary p,
+.stApp [data-testid="stExpander"] summary span,
+.stApp [data-testid="stExpander"] summary svg {{
+  color:var(--sl-text) !important;
+  fill:var(--sl-text) !important;
+  -webkit-text-fill-color:var(--sl-text) !important;
+  opacity:1 !important;
+}}
+.stApp [data-testid="stExpander"] [data-testid="stExpanderDetails"],
+.stApp [data-testid="stExpander"] details > div {{
+  background:var(--sl-surface) !important;
+  background-color:var(--sl-surface) !important;
+  color:var(--sl-text) !important;
+}}
+.stApp [data-testid="stExpander"] [data-testid="stExpanderDetails"] p,
+.stApp [data-testid="stExpander"] [data-testid="stExpanderDetails"] span,
+.stApp [data-testid="stExpander"] [data-testid="stExpanderDetails"] strong {{
+  color:var(--sl-text) !important;
+  -webkit-text-fill-color:var(--sl-text) !important;
+}}
+
 </style>""", unsafe_allow_html=True)
 
 # Main institutional header: university identity is prominent in the content frame.
