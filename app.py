@@ -34,7 +34,7 @@ TEXT = {
     "es": {
         "subtitle": "Laboratorio de modelación y análisis de energía solar",
         "course": "INGENIERÍA MULTIMEDIA  /  CÁLCULO INTEGRAL",
-        "nav": ["Resumen", "Mediciones", "Cálculo integral", "Hipótesis", "Historial", "Informes"],
+        "nav": ["Resumen", "Mediciones", "Cálculo integral", "Hipótesis", "Historial", "Informes", "Manual de usuario"],
         "model": "Parámetros del modelo",
         "panels": "Número de paneles",
         "peak": "Potencia máxima por panel",
@@ -124,7 +124,7 @@ TEXT = {
     "en": {
         "subtitle": "Solar energy modelling and analysis laboratory",
         "course": "MULTIMEDIA ENGINEERING  /  INTEGRAL CALCULUS",
-        "nav": ["Overview", "Measurements", "Integral calculus", "Hypotheses", "History", "Reports"],
+        "nav": ["Overview", "Measurements", "Integral calculus", "Hypotheses", "History", "Reports", "User guide"],
         "model": "Model parameters",
         "panels": "Number of panels",
         "peak": "Maximum power per panel",
@@ -612,7 +612,7 @@ with dark_col:
 
 with st.sidebar:
     st.markdown("### " + ("Navegación" if lang == "es" else "Navigation"))
-    nav_icons = ["⌂", "▤", "∫", "⚗", "◷", "▧"]
+    nav_icons = ["⌂", "▤", "∫", "⚗", "◷", "▧", "ⓘ"]
     for idx, label in enumerate(T["nav"]):
         active = st.session_state.page_index == idx
         st.button(
@@ -1273,6 +1273,236 @@ elif page == T["nav"][5]:
     with dl3:
         st.download_button(T["zip"], package.getvalue(), "solar_lab_paquete_completo.zip", "application/zip", use_container_width=True)
     st.markdown(f'<div class="note-card">{T["caution"]}</div>', unsafe_allow_html=True)
+
+elif page == T["nav"][6]:
+    if lang == "es":
+        section_heading(
+            "10  /  GUÍA DE USO",
+            "Manual de usuario",
+            "Conoce el propósito del laboratorio y sigue esta guía para configurar, analizar e interpretar una simulación.",
+        )
+        st.markdown(
+            """
+            ### ¿Para qué se construyó Solar Lab?
+            Solar Lab – Integral Insights es un laboratorio académico para la asignatura **Cálculo Integral**
+            de Ingeniería Multimedia de la Universidad Simón Bolívar. Su propósito es mostrar cómo una función
+            de potencia solar puede analizarse mediante una integral definida para estimar la energía acumulada.
+            También permite contrastar el modelo matemático con mediciones experimentales cargadas por el usuario.
+
+            El modelo de referencia es idealizado: representa una curva cuadrática de potencia a lo largo del día.
+            No es un pronóstico meteorológico ni una medición certificada de una instalación fotovoltaica.
+            """
+        )
+        st.markdown("### 1. Configura y ejecuta el análisis")
+        st.markdown(
+            """
+            Los controles están en el panel lateral, bajo **Parámetros del modelo**:
+
+            - **Número de paneles:** cantidad de paneles considerados en la simulación.
+            - **Potencia máxima por panel (W):** potencia máxima individual usada por el modelo.
+            - **Hora inicial y hora final:** intervalo que se analizará.
+
+            Ajusta los valores y pulsa **🔎 Analizar parámetros**. Ese botón aplica los cuatro valores
+            y actualiza juntos los indicadores, las dos gráficas y las conclusiones. Mientras no pulses
+            Analizar, se conserva el último análisis aplicado.
+            """
+        )
+        st.markdown("### 2. ¿Qué encontrarás en cada sección?")
+        with st.container(border=True):
+            st.markdown(
+                """
+                **⌂ Resumen**
+
+                Presenta los indicadores principales, la curva de potencia, la energía acumulada y las
+                tres conclusiones analíticas. Desde aquí puedes descargar los datos CSV y la gráfica, o
+                ir a Informes para generar el documento completo.
+                """
+            )
+        with st.container(border=True):
+            st.markdown(
+                """
+                **▤ Mediciones**
+
+                Descarga la plantilla CSV o carga tus propios datos. El archivo debe incluir las columnas
+                **hora** y **potencia_w**. La hora se acepta como **08:30** o como valor decimal **8.5**.
+                La sección revisa registros incompletos, horas duplicadas, potencias negativas y posibles
+                valores atípicos; calcula energía integrada y, con al menos tres horas distintas, presenta
+                un ajuste cuadrático y su coeficiente R².
+                """
+            )
+        with st.container(border=True):
+            st.markdown(
+                """
+                **∫ Cálculo integral**
+
+                Muestra la función de potencia, su antiderivada y la comparación entre la integración
+                analítica y la regla del trapecio. Incluye ejercicios geométricos para calcular el área
+                total de los paneles y el volumen de un sólido de revolución.
+                """
+            )
+        with st.container(border=True):
+            st.markdown(
+                """
+                **⚗ Hipótesis**
+
+                Permite variar la potencia máxima para comparar el escenario base con una hipótesis
+                de cambio entre −50 % y +50 %. Pulsa **Guardar escenario** para registrar la hipótesis
+                en el Historial.
+                """
+            )
+        with st.container(border=True):
+            st.markdown(
+                """
+                **◷ Historial**
+
+                Muestra los escenarios guardados desde Hipótesis, permite descargar el registro en CSV
+                y limpiar los registros de la sesión. **Importante:** actualmente el historial es temporal;
+                se conserva durante la sesión activa y no es una base de datos permanente.
+                """
+            )
+        with st.container(border=True):
+            st.markdown(
+                """
+                **▧ Informes**
+
+                Genera el informe PDF con los parámetros, resultados de integración y conclusiones
+                analíticas. También permite descargar los datos CSV y un paquete ZIP que contiene el PDF,
+                el CSV y un archivo de texto con las conclusiones.
+                """
+            )
+        st.markdown("### 3. Cómo interpretar las conclusiones")
+        st.markdown(
+            """
+            - **Comportamiento de la potencia:** explica el máximo del modelo y si la potencia aumenta,
+              disminuye o ambas cosas dentro del intervalo elegido.
+            - **Energía generada:** informa la energía obtenida con la integral definida, la potencia
+              promedio y la diferencia entre los métodos analítico y numérico.
+            - **Confiabilidad y limitaciones:** aclara si el análisis proviene del modelo hipotético o
+              de un CSV; cuando hay mediciones, resume sus indicadores de calidad y el ajuste R² cuando
+              existen suficientes datos.
+
+            Las conclusiones se actualizan al pulsar **Analizar parámetros**. Cuando se cargan mediciones
+            CSV, sus resultados experimentales se incorporan al análisis y se distinguen de la estimación
+            del modelo.
+            """
+        )
+        st.info(
+            "Recomendación: comienza con los valores predeterminados, pulsa Analizar, modifica un parámetro "
+            "a la vez y compara cómo cambian las curvas, la energía y las conclusiones."
+        )
+    else:
+        section_heading(
+            "10  /  USER GUIDE",
+            "User guide",
+            "Learn the purpose of the laboratory and follow this guide to configure, analyse and interpret a simulation.",
+        )
+        st.markdown(
+            """
+            ### What is Solar Lab for?
+            Solar Lab – Integral Insights is an academic laboratory for the **Integral Calculus** course
+            in the Multimedia Engineering programme at Universidad Simón Bolívar. It demonstrates how
+            a solar power function can be analysed with a definite integral to estimate accumulated energy.
+            It also allows users to compare the mathematical model with uploaded experimental measurements.
+
+            The reference model is an idealised quadratic power curve throughout the day. It is not a
+            weather forecast or a certified measurement of a photovoltaic installation.
+            """
+        )
+        st.markdown("### 1. Configure and run an analysis")
+        st.markdown(
+            """
+            The controls are in the sidebar under **Model parameters**:
+
+            - **Number of panels:** number of panels included in the simulation.
+            - **Maximum power per panel (W):** the individual peak power used by the model.
+            - **Start time and end time:** the interval to analyse.
+
+            Set the values and press **🔎 Analyze parameters**. This applies all four values and updates
+            the indicators, both charts and the conclusions together. Until you press Analyze, the
+            last applied analysis remains displayed.
+            """
+        )
+        st.markdown("### 2. What each section does")
+        with st.container(border=True):
+            st.markdown(
+                """
+                **⌂ Overview**
+
+                Shows the key indicators, power curve, accumulated energy and three analytical conclusions.
+                You can download the CSV data and chart, or open Reports to generate the full document.
+                """
+            )
+        with st.container(border=True):
+            st.markdown(
+                """
+                **▤ Measurements**
+
+                Download the CSV template or upload your own data. The file must contain **hora** and
+                **potencia_w** columns. Time accepts **08:30** or decimal values such as **8.5**.
+                The section checks incomplete records, duplicate times, negative power and potential
+                outliers; it integrates energy and, with at least three distinct times, displays a
+                quadratic fit and its R-squared value.
+                """
+            )
+        with st.container(border=True):
+            st.markdown(
+                """
+                **∫ Integral calculus**
+
+                Shows the power function, its antiderivative and a comparison between analytical
+                integration and the trapezoidal rule. It also includes geometry exercises for total
+                panel area and the volume of a solid of revolution.
+                """
+            )
+        with st.container(border=True):
+            st.markdown(
+                """
+                **⚗ Hypotheses**
+
+                Change maximum power to compare the baseline with a hypothesis ranging from −50 % to
+                +50 %. Press **Save scenario** to add the hypothesis to History.
+                """
+            )
+        with st.container(border=True):
+            st.markdown(
+                """
+                **◷ History**
+
+                Displays scenarios saved from Hypotheses, lets you download the records as CSV and clear
+                the current session's records. **Important:** history is temporary; it remains available
+                during the active session and is not stored in a permanent database.
+                """
+            )
+        with st.container(border=True):
+            st.markdown(
+                """
+                **▧ Reports**
+
+                Generates a PDF report with the parameters, integration results and analytical conclusions.
+                You can also download the CSV data and a ZIP package containing the PDF, CSV and a text
+                file with the conclusions.
+                """
+            )
+        st.markdown("### 3. Understanding the conclusions")
+        st.markdown(
+            """
+            - **Power behaviour:** explains the model's peak and whether power increases, decreases or
+              does both within the selected interval.
+            - **Energy generated:** reports definite-integral energy, average power and the difference
+              between analytical and numerical methods.
+            - **Reliability and limitations:** identifies whether the analysis comes from the hypothetical
+              model or a CSV; when measurements are available, it summarises data-quality indicators and
+              the R-squared fit when enough data points exist.
+
+            Conclusions update when you press **Analyze parameters**. When CSV measurements are uploaded,
+            their experimental results are included and distinguished from the model estimate.
+            """
+        )
+        st.info(
+            "Tip: start with the default values, press Analyze, change one parameter at a time and compare "
+            "how the curves, energy and conclusions respond."
+        )
+
 
 st.divider()
 st.markdown(
